@@ -7,12 +7,14 @@ namespace cv_camera
 namespace enc = sensor_msgs::image_encodings;
 
 Capture::Capture(ros::NodeHandle& node,
-                   const std::string& topic_name,
-                   int32_t buffer_size) :
+                 const std::string& topic_name,
+                 int32_t buffer_size,
+                 const std::string& frame_id) :
     node_(node),
     it_(node_),
     topic_name_(topic_name),
-    buffer_size_(buffer_size)
+    buffer_size_(buffer_size),
+    frame_id_(frame_id)
 {
 }
 
@@ -32,15 +34,20 @@ void Capture::open()
   open(0);
 }
 
-void Capture::capture()
+bool Capture::capture()
 {
-  cap_ >> bridge_.image;
-  bridge_.encoding = enc::BGR8;
-  info_.height = bridge_.image.rows;
-  info_.width = bridge_.image.cols;
-  ros::Time now = ros::Time::now();
-  info_.header.stamp = now;
-  bridge_.header.stamp = now;
+  if(cap_.read(bridge_.image)) {
+    bridge_.encoding = enc::BGR8;
+    info_.height = bridge_.image.rows;
+    info_.width = bridge_.image.cols;
+    ros::Time now = ros::Time::now();
+    info_.header.stamp = now;
+    info_.header.frame_id = frame_id_;
+    bridge_.header.stamp = now;
+    bridge_.header.frame_id = frame_id_;
+    return true;
+  }
+  return false;
 }
 
 void Capture::publish()

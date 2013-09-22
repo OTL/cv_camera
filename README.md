@@ -2,9 +2,6 @@ ROS OpenCV camera driver
 ========================
 It is very easy to capture video device if we use cv::VideoCapture of OpenCV.
 
-Nodes
-================
-
 cv_camera_node
 ------------------
 
@@ -15,15 +12,14 @@ cv_camera_node
 
 ## Parameters ##
 
-* ~rate (double: default 30.0) publish rate [Hz]
-* ~device_id (int: default 0) capture device id
+* ~rate (double: default 30.0) publish rate [Hz].
+* ~device_id (int: default 0) capture device id.
+* ~frame_id (string: default "camera") frame_id of message header.
+* ~image_width (int) try to set capture image width.
+* ~image_height (int) try to set capture image height.
 
 Nodelet
-================
+-------------------
 
-This node works as nodelet.
-
-cv_camera/CvCameraNodelet
----------------------------
-same as node.
+This node works as nodelet (cv_camera/CvCameraNodelet).
 

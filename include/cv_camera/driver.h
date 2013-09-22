@@ -41,6 +41,10 @@ class Driver {
    */
   ros::NodeHandle private_node_;
   /**
+   * @brief ROS private node for publishing images.
+   */
+  ros::NodeHandle camera_node_;
+  /**
    * @brief wrapper of cv::VideoCapture.
    */
   boost::shared_ptr<Capture> camera_;

@@ -27,10 +27,12 @@ class Capture {
    * @param node ROS node handle for advertise topic.
    * @param topic_name name of topic to publish (this may be image_raw).
    * @param buffer_size size of publisher buffer.
+   * @param frame_id frame_id of publishing messages.
    */
   Capture(ros::NodeHandle& node,
-           const std::string& topic_name,
-           int32_t buffer_size);
+          const std::string& topic_name,
+          int32_t buffer_size,
+          const std::string& frame_id);
   
   /** 
    * @brief Open capture device with device ID.
@@ -54,8 +56,9 @@ class Capture {
    * @brief capture an image and store.
    *
    * to publish the captured image, call publish();
+   * @return true if success to capture, false if not captured.
    */
-  void capture();
+  bool capture();
 
   /** 
    * @brief Publish the image that is already captured by capture().
@@ -98,6 +101,22 @@ class Capture {
   {
     return bridge_.toImageMsg();
   }
+
+  /**
+   * @brief try capture image width
+   * @return true if success
+   */
+  bool setWidth(int32_t width) {
+    return cap_.set(CV_CAP_PROP_FRAME_WIDTH, width);
+  }
+
+  /**
+   * @brief try capture image height
+   * @return true if success
+   */
+  bool setHeight(int32_t height) {
+    return cap_.set(CV_CAP_PROP_FRAME_HEIGHT, height);
+  }
   
  private:
 
@@ -116,6 +135,10 @@ class Capture {
    */
   std::string topic_name_;
 
+  /**
+   * @brief header.frame_id for publishing images.
+   */
+  std::string frame_id_;
   /**
    * @brief size of publisher buffer
    */
