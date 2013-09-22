@@ -1,0 +1,96 @@
+cmake_minimum_required(VERSION 2.8.3)
+project(cv_camera)
+
+## Find catkin macros and libraries
+## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
+## is used, also find other catkin packages
+find_package(catkin REQUIRED COMPONENTS image_transport roscpp cv_bridge sensor_msgs nodelet)
+find_package(OpenCV REQUIRED)
+
+find_package(Boost REQUIRED COMPONENTS system thread)
+
+catkin_package(
+  INCLUDE_DIRS include
+  LIBRARIES cv_camera
+  CATKIN_DEPENDS image_transport roscpp
+  DEPENDS opencv2
+  )
+
+include_directories(
+  include
+  ${catkin_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
+  )
+
+## Declare a cpp library
+add_library(cv_camera src/capture.cpp src/driver.cpp)
+add_library(cv_camera_nodelet src/cv_camera_nodelet.cpp)
+  
+
+## Declare a cpp executable
+add_executable(cv_camera_node src/cv_camera_node.cpp)
+add_dependencies(cv_camera_node cv_camera)
+add_dependencies(cv_camera_nodelet cv_camera)
+
+## Specify libraries to link a library or executable target against
+target_link_libraries(cv_camera
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBS}
+  )
+
+target_link_libraries(cv_camera_nodelet
+  ${catkin_LIBRARIES}
+  cv_camera
+  )
+
+target_link_libraries(cv_camera_node
+  ${catkin_LIBRARIES}
+  cv_camera
+  )
+
+#############
+## Install ##
+#############
+
+## Mark executable scripts (Python etc.) for installation
+## in contrast to setup.py, you can choose the destination
+# install(PROGRAMS
+#   scripts/my_python_script
+#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+# )
+
+## Mark executables and/or libraries for installation
+install(TARGETS cv_camera cv_camera_nodelet cv_camera_node
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  )
+
+install(DIRECTORY include/${PROJECT_NAME}/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  )
+
+# add xml file
+install(FILES cv_camera_nodelets.xml
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  )
+
+## Mark other files for installation (e.g. launch and bag files, etc.)
+# install(FILES
+#   # myfile1
+#   # myfile2
+#   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+# )
+
+#############
+## Testing ##
+#############
+
+## Add gtest based cpp test target and link libraries
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_cv_camera.cpp)
+# if(TARGET ${PROJECT_NAME}-test)
+#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
+# endif()
+
+## Add folders to be run by python nosetests
+# catkin_add_nosetests(test)
