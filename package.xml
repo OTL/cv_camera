@@ -2,12 +2,14 @@
 <package>
   <name>cv_camera</name>
   <version>0.0.0</version>
-  <description>The cv_camera package</description>
-  <maintainer email="t.ogura@gmail.com">ogura</maintainer>
+  <description>cv_camera uses OpenCV capture object to capture camera image.
+  This supports camera_image and nodelet.
+  </description>
+  <maintainer email="t.ogura@gmail.com">Takashi Ogura</maintainer>
   <license>BSD</license>
 
-  <url type="website">http://ros.org/wiki/cv_camera</url>
-  <author email="t.ogura@gmail.com">Takashi Ogura</author> -->
+  <url type="website">http://wiki.ros.org/cv_camera</url>
+  <author email="t.ogura@gmail.com">Takashi Ogura</author>
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>opencv2</build_depend>
