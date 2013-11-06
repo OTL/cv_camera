@@ -16,6 +16,7 @@
   <build_depend>cv_bridge</build_depend>
   <build_depend>sensor_msgs</build_depend>
   <build_depend>nodelet</build_depend>
+  <build_depend>camera_info_manager</build_depend>
 
   <run_depend>opencv2</run_depend>
   <run_depend>image_transport</run_depend>
@@ -23,6 +24,7 @@
   <run_depend>cv_bridge</run_depend>
   <run_depend>sensor_msgs</run_depend>
   <run_depend>nodelet</run_depend>
+  <run_depend>camera_info_manager</run_depend>
 
   <export>
     <nodelet plugin="${prefix}/cv_camera_nodelets.xml"/>

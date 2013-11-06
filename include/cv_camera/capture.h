@@ -9,6 +9,7 @@
 #include <sensor_msgs/CameraInfo.h>
 #include <sensor_msgs/image_encodings.h>
 #include <opencv2/highgui/highgui.hpp>
+#include <camera_info_manager/camera_info_manager.h>
 
 /**
  * @brief namespace of this package
@@ -117,7 +118,7 @@ class Capture {
   bool setHeight(int32_t height) {
     return cap_.set(CV_CAP_PROP_FRAME_HEIGHT, height);
   }
-  
+
  private:
 
   /**
@@ -165,6 +166,11 @@ class Capture {
    * currently this has image size (width/height) only.
    */
   sensor_msgs::CameraInfo info_;
+
+  /**
+   * @brief camera info manager
+   */
+  camera_info_manager::CameraInfoManager info_manager_;
 };
 
 }  // end namespace

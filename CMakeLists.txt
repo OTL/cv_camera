@@ -4,7 +4,7 @@ project(cv_camera)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS image_transport roscpp cv_bridge sensor_msgs nodelet)
+find_package(catkin REQUIRED COMPONENTS image_transport roscpp cv_bridge sensor_msgs nodelet camera_info_manager)
 find_package(OpenCV REQUIRED)
 
 find_package(Boost REQUIRED COMPONENTS system thread)
@@ -12,7 +12,7 @@ find_package(Boost REQUIRED COMPONENTS system thread)
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES cv_camera
-  CATKIN_DEPENDS image_transport roscpp
+  CATKIN_DEPENDS image_transport roscpp cv_bridge sensor_msgs nodelet camera_info_manager
   DEPENDS opencv2
   )
 
