@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(cv_camera)
 
-find_package(catkin REQUIRED COMPONENTS image_transport roscpp cv_bridge sensor_msgs nodelet camera_info_manager)
+find_package(catkin REQUIRED COMPONENTS image_transport roscpp cv_bridge sensor_msgs nodelet camera_info_manager rostest)
 find_package(OpenCV REQUIRED)
 
 find_package(Boost REQUIRED COMPONENTS system thread)
@@ -78,10 +78,5 @@ install(FILES cv_camera_nodelets.xml
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_cv_camera.cpp)
-# if(TARGET ${PROJECT_NAME}-test)
-#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-# endif()
-
-## Add folders to be run by python nosetests
-# catkin_add_nosetests(test)
+add_rostest_gtest(test_cv_camera test/cv_camera.test test/test_cv_camera.cpp)
+target_link_libraries(test_cv_camera ${PROJECT_NAME} ${catkin_LIBRARIES})

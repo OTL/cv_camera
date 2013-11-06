@@ -28,6 +28,7 @@
   <run_depend>nodelet</run_depend>
   <run_depend>camera_info_manager</run_depend>
 
+  <test_depend>rostest</test_depend>
   <export>
     <nodelet plugin="${prefix}/cv_camera_nodelets.xml"/>
   </export>

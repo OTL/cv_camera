@@ -22,6 +22,7 @@ cv_camera_node
 * ~image_width (int) try to set capture image width.
 * ~image_height (int) try to set capture image height.
 * ~camera_info_url (string) url of camera info yaml.
+* ~file (string: default "") if not "" then use this file instead of device.
 
 Nodelet
 -------------------

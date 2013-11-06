@@ -37,12 +37,31 @@ void Capture::open(int32_t device_id)
       info_manager_.loadCameraInfo(url);
     }
   }
-
 }
 
 void Capture::open()
 {
   open(0);
+}
+
+void Capture::openFile(const std::string& file_path)
+{
+  cap_.open(file_path);
+  if (!cap_.isOpened()) {
+    std::stringstream stream;
+    stream << "file " << file_path << " cannot be opened";
+    throw DeviceError(stream.str());
+  }
+  pub_ = it_.advertiseCamera(topic_name_, buffer_size_);
+
+  std::string url;
+  if (node_.getParam("camera_info_url", url))
+  {
+    if (info_manager_.validateURL(url))
+    {
+      info_manager_.loadCameraInfo(url);
+    }
+  }
 }
 
 bool Capture::capture()
@@ -57,6 +76,7 @@ bool Capture::capture()
     info_.header.frame_id = frame_id_;
     bridge_.header.stamp = now;
     bridge_.header.frame_id = frame_id_;
+
     return true;
   }
   return false;

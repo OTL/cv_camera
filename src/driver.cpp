@@ -20,7 +20,8 @@ void Driver::setup() {
   double hz(DEFAULT_RATE);
   int32_t device_id(0);
   std::string frame_id("camera");
-
+  std::string file_path("");
+  
   private_node_.getParam("device_id", device_id);
   private_node_.getParam("frame_id", frame_id);
   private_node_.getParam("rate", hz);
@@ -32,7 +33,12 @@ void Driver::setup() {
                             "image_raw",
                             PUBLISHER_BUFFER_SIZE,
                             frame_id));
-  camera_->open(device_id);
+  if (private_node_.getParam("file", file_path) &&
+      file_path != "") {
+    camera_->openFile(file_path);
+  } else {
+    camera_->open(device_id);
+  }
   if (private_node_.getParam("image_width", image_width)) {
     if(!camera_->setWidth(image_width)) {
       ROS_WARN("fail to set image_width");

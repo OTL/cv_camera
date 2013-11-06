@@ -53,6 +53,11 @@ class Capture {
    */
   void open();
 
+  /**
+   * @brief open video file instead of capture device.
+   */
+  void openFile(const std::string& file_path);
+
   /** 
    * @brief capture an image and store.
    *
