@@ -14,7 +14,8 @@ Capture::Capture(ros::NodeHandle& node,
     it_(node_),
     topic_name_(topic_name),
     buffer_size_(buffer_size),
-    frame_id_(frame_id)
+    frame_id_(frame_id),
+    info_manager_(node_, frame_id)
 {
 }
 
@@ -27,6 +28,16 @@ void Capture::open(int32_t device_id)
     throw DeviceError(stream.str());
   }
   pub_ = it_.advertiseCamera(topic_name_, buffer_size_);
+
+  std::string url;
+  if (node_.getParam("camera_info_url", url))
+  {
+    if (info_manager_.validateURL(url))
+    {
+      info_manager_.loadCameraInfo(url);
+    }
+  }
+
 }
 
 void Capture::open()
@@ -38,6 +49,7 @@ bool Capture::capture()
 {
   if(cap_.read(bridge_.image)) {
     bridge_.encoding = enc::BGR8;
+    info_ = info_manager_.getCameraInfo();
     info_.height = bridge_.image.rows;
     info_.width = bridge_.image.cols;
     ros::Time now = ros::Time::now();
