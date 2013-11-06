@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(cv_camera)
 
-## Find catkin macros and libraries
-## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
-## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS image_transport roscpp cv_bridge sensor_msgs nodelet camera_info_manager)
 find_package(OpenCV REQUIRED)
 
@@ -75,12 +72,6 @@ install(FILES cv_camera_nodelets.xml
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   )
 
-## Mark other files for installation (e.g. launch and bag files, etc.)
-# install(FILES
-#   # myfile1
-#   # myfile2
-#   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-# )
 
 #############
 ## Testing ##
