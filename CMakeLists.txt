@@ -78,5 +78,10 @@ install(FILES cv_camera_nodelets.xml
 #############
 
 ## Add gtest based cpp test target and link libraries
-add_rostest_gtest(test_cv_camera test/cv_camera.test test/test_cv_camera.cpp)
+add_rostest_gtest(test_cv_camera test/cv_camera.test
+  test/test_cv_camera.cpp)
 target_link_libraries(test_cv_camera ${PROJECT_NAME} ${catkin_LIBRARIES})
+
+add_rostest_gtest(test_cv_camera_no_yaml test/no_yaml.test
+  test/test_cv_camera_no_yaml.cpp)
+target_link_libraries(test_cv_camera_no_yaml ${PROJECT_NAME} ${catkin_LIBRARIES})

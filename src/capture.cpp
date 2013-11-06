@@ -67,15 +67,20 @@ void Capture::openFile(const std::string& file_path)
 bool Capture::capture()
 {
   if(cap_.read(bridge_.image)) {
-    bridge_.encoding = enc::BGR8;
-    info_ = info_manager_.getCameraInfo();
-    info_.height = bridge_.image.rows;
-    info_.width = bridge_.image.cols;
     ros::Time now = ros::Time::now();
-    info_.header.stamp = now;
-    info_.header.frame_id = frame_id_;
+    bridge_.encoding = enc::BGR8;
     bridge_.header.stamp = now;
     bridge_.header.frame_id = frame_id_;
+
+    info_ = info_manager_.getCameraInfo();
+    if (info_.height == 0) {
+      info_.height = bridge_.image.rows;
+    }
+    if (info_.width == 0) {
+      info_.width = bridge_.image.cols;
+    }
+    info_.header.stamp = now;
+    info_.header.frame_id = frame_id_;
 
     return true;
   }
