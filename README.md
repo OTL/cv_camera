@@ -5,16 +5,16 @@ It is very easy to capture video device if we use cv::VideoCapture of OpenCV.
 cv_camera_node
 ------------------
 
-## Publish ##
+### Publish ###
 
 * ~image_raw (sensor_msgs/Image)
 * ~camera_info (sensor_msgs/CameraInfo)
 
-## Service ##
+### Service ###
 
 * ~set_camera_info (sensor_msgs/SetCameraInfo)
 
-## Parameters ##
+### Parameters ###
 
 * ~rate (double: default 30.0) publish rate [Hz].
 * ~device_id (int: default 0) capture device id.
