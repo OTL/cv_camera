@@ -4,6 +4,8 @@ It is very easy to capture video device if we use cv::VideoCapture of OpenCV.
 
 cv_camera_node
 ------------------
+This node uses [camera_info_manager](http://wiki.ros.org/camera_info_manager) for dealing with camera_info.
+If no calibration data is set, it has dummy values except for width and height.
 
 ### Publish ###
 
@@ -22,7 +24,7 @@ cv_camera_node
 * ~image_width (int) try to set capture image width.
 * ~image_height (int) try to set capture image height.
 * ~camera_info_url (string) url of camera info yaml.
-* ~file (string: default "") if not "" then use this file instead of device.
+* ~file (string: default "") if not "" then use movie file instead of device.
 
 Nodelet
 -------------------
