@@ -2,8 +2,8 @@
 Changelog for package cv_camera
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.2 (2013-11-08)
+------------------
 * rostest should be build_depend (for binary package build)
   see http://docs.ros.org/api/catkin/html/howto/rostest_configuration.html
   for more information.
