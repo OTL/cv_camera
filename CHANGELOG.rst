@@ -2,6 +2,11 @@
 Changelog for package cv_camera
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix opencv2 to libopencv-dev
+* Contributors: Takashi Ogura
+
 0.0.3 (2015-10-17)
 ------------------
 * Enable any prop code
