@@ -2,6 +2,13 @@
 Changelog for package cv_camera
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Enable any prop code
+* Fix coding style using roslint
+* Support CV_CAP_PROP_* params
+* Contributors: Takashi Ogura
+
 0.0.2 (2013-11-08)
 ------------------
 * rostest should be build_depend (for binary package build)
