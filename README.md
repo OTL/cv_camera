@@ -26,6 +26,27 @@ If no calibration data is set, it has dummy values except for width and height.
 * ~camera_info_url (string) url of camera info yaml.
 * ~file (string: default "") if not "" then use movie file instead of device.
 
+And supports CV_CAP_PROP_*, by below params.
+
+* ~cv_cap_prop_pos_msec (double)
+* ~cv_cap_prop_pos_avi_ratio (double)
+* ~cv_cap_prop_frame_width (double)
+* ~cv_cap_prop_frame_height (double)
+* ~cv_cap_prop_fps (double)
+* ~cv_cap_prop_fourcc (double)
+* ~cv_cap_prop_frame_count (double)
+* ~cv_cap_prop_format (double)
+* ~cv_cap_prop_mode (double)
+* ~cv_cap_prop_brightness (double)
+* ~cv_cap_prop_contrast (double)
+* ~cv_cap_prop_saturation (double)
+* ~cv_cap_prop_hue (double)
+* ~cv_cap_prop_gain (double)
+* ~cv_cap_prop_exposure (double)
+* ~cv_cap_prop_convert_rgb (double)
+* ~cv_cap_prop_rectification (double)
+* ~cv_cap_prop_iso_speed (double)
+
 Nodelet
 -------------------
 

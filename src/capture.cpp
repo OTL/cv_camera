@@ -92,4 +92,16 @@ void Capture::publish()
   pub_.publish(*getImageMsgPtr(), info_);
 }
 
+bool Capture::setPropertyFromParam(int property_id, const std::string &param_name)
+{
+  if (cap_.isOpened()) {
+    double value = 0.0;
+    if (node_.getParam(param_name, value)) {
+      ROS_INFO("setting property %s = %lf", param_name.c_str(), value);
+      return cap_.set(property_id, value);
+    }
+  }
+  return true;
+}
+
 }  // namespace cv_camera

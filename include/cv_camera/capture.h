@@ -79,7 +79,7 @@ class Capture {
    * 
    * @return CameraInfo
    */
-  const sensor_msgs::CameraInfo& getInfo() const
+  inline const sensor_msgs::CameraInfo& getInfo() const
   {
     return info_;
   }
@@ -91,7 +91,7 @@ class Capture {
    * 
    * @return captured cv::Mat
    */
-  const cv::Mat& getCvImage() const
+  inline const cv::Mat& getCvImage() const
   {
     return bridge_.image;
   }
@@ -103,7 +103,7 @@ class Capture {
    * 
    * @return message pointer.
    */
-  const sensor_msgs::ImagePtr getImageMsgPtr() const
+  inline const sensor_msgs::ImagePtr getImageMsgPtr() const
   {
     return bridge_.toImageMsg();
   }
@@ -112,7 +112,7 @@ class Capture {
    * @brief try capture image width
    * @return true if success
    */
-  bool setWidth(int32_t width) {
+  inline bool setWidth(int32_t width) {
     return cap_.set(CV_CAP_PROP_FRAME_WIDTH, width);
   }
 
@@ -120,9 +120,15 @@ class Capture {
    * @brief try capture image height
    * @return true if success
    */
-  bool setHeight(int32_t height) {
+  inline bool setHeight(int32_t height) {
     return cap_.set(CV_CAP_PROP_FRAME_HEIGHT, height);
   }
+
+  /**
+   * @brief set CV_PROP_*
+   * @return true if success
+   */
+  bool setPropertyFromParam(int property_id, const std::string &param_name);
 
  private:
 
