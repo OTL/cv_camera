@@ -41,6 +41,27 @@ void Capture::open(int32_t device_id)
       info_manager_.loadCameraInfo(url);
     }
   }
+
+  for (int i = 0; ; ++i)
+  {
+    int code = 0;
+    double value = 0.0;
+    std::stringstream stream;
+    stream << "property_" << i << "_code";
+    const std::string param_for_code = stream.str();
+    stream.str("");
+    stream << "property_" << i << "_value";
+    const std::string param_for_value = stream.str();
+    if (!node_.getParam(param_for_code, code) || !node_.getParam(param_for_value, value))
+    {
+      break;
+    }
+    if (!cap_.set(code, value))
+    {
+      ROS_ERROR_STREAM("Setting with code " << code << " and value " << value << " failed"
+                       << std::endl);
+    }
+  }
 }
 
 void Capture::open()
