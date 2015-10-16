@@ -2,8 +2,8 @@
 Changelog for package cv_camera
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.3 (2015-10-17)
+------------------
 * Enable any prop code
 * Fix coding style using roslint
 * Support CV_CAP_PROP_* params
