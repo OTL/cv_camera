@@ -2,8 +2,8 @@
 Changelog for package cv_camera
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.0 (2015-10-17)
+------------------
 * Fix opencv2 to libopencv-dev
 * Contributors: Takashi Ogura
 
