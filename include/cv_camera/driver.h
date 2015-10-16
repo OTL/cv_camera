@@ -1,23 +1,27 @@
+// Copyright [2015] Takashi Ogura<t.ogura@gmail.com>
+
 #ifndef CV_CAMERA_DRIVER_H
 #define CV_CAMERA_DRIVER_H
 
 #include "cv_camera/capture.h"
 
-namespace cv_camera {
+namespace cv_camera
+{
 
 /**
  * @brief ROS cv camera driver.
  *
  * This wraps getting parameters and publish in specified rate.
  */
-class Driver {
+class Driver
+{
  public:
-  /** 
+  /**
    * @brief construct with ROS node handles.
    *
    * use private_node for getting topics like ~rate or ~device,
    * camera_node for advertise and publishing images.
-   * 
+   *
    * @param private_node node for getting parameters.
    * @param camera_node node for publishing.
    */
@@ -55,6 +59,6 @@ class Driver {
   boost::shared_ptr<ros::Rate> rate_;
 };
 
-}
+}  // namespace cv_camera
 
 #endif  // CV_CAMERA_DRIVER_H

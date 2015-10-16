@@ -1,3 +1,5 @@
+// Copyright [2015] Takashi Ogura<t.ogura@gmail.com>
+
 #include <ros/ros.h>
 #include <sensor_msgs/CameraInfo.h>
 #include <sensor_msgs/Image.h>
@@ -66,7 +68,8 @@ TEST(CvCameraNode, getCameraInfo)
   EXPECT_EQ(480, g_camera_info.height);
 }
 
-int main(int argc, char **argv){
+int main(int argc, char **argv)
+{
   ros::init(argc, argv, "test_cv_camera_no_yaml");
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

@@ -1,7 +1,10 @@
+// Copyright [2015] Takashi Ogura<t.ogura@gmail.com>
+
 #ifndef CV_CAMERA_CAPTURE_H
 #define CV_CAMERA_CAPTURE_H
 
 #include "cv_camera/exception.h"
+#include <string>
 
 #include <ros/ros.h>
 #include <cv_bridge/cv_bridge.h>
@@ -14,17 +17,19 @@
 /**
  * @brief namespace of this package
  */
-namespace cv_camera {
+namespace cv_camera
+{
 
 /**
  * @brief captures by cv::VideoCapture and publishes to ROS topic.
  *
  */
-class Capture {
+class Capture
+{
  public:
-  /** 
+  /**
    * @brief costruct with ros node and topic settings
-   * 
+   *
    * @param node ROS node handle for advertise topic.
    * @param topic_name name of topic to publish (this may be image_raw).
    * @param buffer_size size of publisher buffer.
@@ -34,19 +39,19 @@ class Capture {
           const std::string& topic_name,
           int32_t buffer_size,
           const std::string& frame_id);
-  
-  /** 
+
+  /**
    * @brief Open capture device with device ID.
-   * 
+   *
    * @param device_id id of camera device (number from 0)
    * @throw cv_camera::DeviceError device open failed
-   * 
+   *
    */
   void open(int32_t device_id);
-  
-  /** 
+
+  /**
    * @brief Open default camera device.
-   * 
+   *
    * This opens with device 0.
    *
    * @throw cv_camera::DeviceError device open failed
@@ -58,7 +63,7 @@ class Capture {
    */
   void openFile(const std::string& file_path);
 
-  /** 
+  /**
    * @brief capture an image and store.
    *
    * to publish the captured image, call publish();
@@ -66,44 +71,44 @@ class Capture {
    */
   bool capture();
 
-  /** 
+  /**
    * @brief Publish the image that is already captured by capture().
-   * 
+   *
    */
   void publish();
 
-  /** 
+  /**
    * @brief accessor of CameraInfo.
    *
    * you have to call capture() before call this.
-   * 
+   *
    * @return CameraInfo
    */
-  const sensor_msgs::CameraInfo& getInfo() const
+  inline const sensor_msgs::CameraInfo& getInfo() const
   {
     return info_;
   }
 
-  /** 
+  /**
    * @brief accessor of cv::Mat
-   * 
+   *
    * you have to call capture() before call this.
-   * 
+   *
    * @return captured cv::Mat
    */
-  const cv::Mat& getCvImage() const
+  inline const cv::Mat& getCvImage() const
   {
     return bridge_.image;
   }
-  
-  /** 
+
+  /**
    * @brief accessor of ROS Image message.
-   * 
+   *
    * you have to call capture() before call this.
-   * 
+   *
    * @return message pointer.
    */
-  const sensor_msgs::ImagePtr getImageMsgPtr() const
+  inline const sensor_msgs::ImagePtr getImageMsgPtr() const
   {
     return bridge_.toImageMsg();
   }
@@ -112,7 +117,8 @@ class Capture {
    * @brief try capture image width
    * @return true if success
    */
-  bool setWidth(int32_t width) {
+  inline bool setWidth(int32_t width)
+  {
     return cap_.set(CV_CAP_PROP_FRAME_WIDTH, width);
   }
 
@@ -120,12 +126,18 @@ class Capture {
    * @brief try capture image height
    * @return true if success
    */
-  bool setHeight(int32_t height) {
+  inline bool setHeight(int32_t height)
+  {
     return cap_.set(CV_CAP_PROP_FRAME_HEIGHT, height);
   }
 
- private:
+  /**
+   * @brief set CV_PROP_*
+   * @return true if success
+   */
+  bool setPropertyFromParam(int property_id, const std::string &param_name);
 
+ private:
   /**
    * @brief node handle for advertise.
    */
@@ -178,6 +190,6 @@ class Capture {
   camera_info_manager::CameraInfoManager info_manager_;
 };
 
-}  // end namespace
+}  // namespace cv_camera
 
-#endif  // end CV_CAMERA_CAPTURE_H
+#endif  // CV_CAMERA_CAPTURE_H

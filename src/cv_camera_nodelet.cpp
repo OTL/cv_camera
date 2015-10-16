@@ -1,3 +1,5 @@
+// Copyright [2015] Takashi Ogura<t.ogura@gmail.com>
+
 #include "cv_camera/driver.h"
 
 #include <nodelet/nodelet.h>
@@ -14,9 +16,7 @@ class CvCameraNodelet : public nodelet::Nodelet
  public:
   CvCameraNodelet() :
       is_running_(false)
-  {
-  }
-  ;
+  {}
   ~CvCameraNodelet()
   {
     if (is_running_)
@@ -24,8 +24,8 @@ class CvCameraNodelet : public nodelet::Nodelet
       is_running_ = false;
       thread_->join();
     }
-  };
-  
+  }
+
  private:
   /**
    * @brief Start capture/publish thread.
@@ -34,12 +34,15 @@ class CvCameraNodelet : public nodelet::Nodelet
   {
     driver_.reset(new Driver(getPrivateNodeHandle(),
                              getPrivateNodeHandle()));
-    try {
+    try
+    {
       driver_->setup();
       is_running_ = true;
       thread_ = boost::shared_ptr<boost::thread>
           (new boost::thread(boost::bind(&CvCameraNodelet::main, this)));
-    } catch(cv_camera::DeviceError& e) {
+    }
+    catch(cv_camera::DeviceError& e)
+    {
       NODELET_ERROR_STREAM("failed to open device... do nothing: " << e.what());
     }
   }
@@ -49,7 +52,7 @@ class CvCameraNodelet : public nodelet::Nodelet
    */
   void main()
   {
-    while(is_running_)
+    while (is_running_)
     {
       driver_->proceed();
     }
@@ -69,7 +72,6 @@ class CvCameraNodelet : public nodelet::Nodelet
    * @brief thread object for main loop.
    */
   boost::shared_ptr<boost::thread> thread_;
-
 };
 
 }  // end namespace cv_camera
