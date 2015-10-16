@@ -1,5 +1,8 @@
+// Copyright [2015] Takashi Ogura<t.ogura@gmail.com>
+
 #include "cv_camera/capture.h"
 #include <sstream>
+#include <string>
 
 namespace cv_camera
 {
@@ -22,7 +25,8 @@ Capture::Capture(ros::NodeHandle& node,
 void Capture::open(int32_t device_id)
 {
   cap_.open(device_id);
-  if (!cap_.isOpened()) {
+  if (!cap_.isOpened())
+  {
     std::stringstream stream;
     stream << "device_id " << device_id << " cannot be opened";
     throw DeviceError(stream.str());
@@ -47,7 +51,8 @@ void Capture::open()
 void Capture::openFile(const std::string& file_path)
 {
   cap_.open(file_path);
-  if (!cap_.isOpened()) {
+  if (!cap_.isOpened())
+  {
     std::stringstream stream;
     stream << "file " << file_path << " cannot be opened";
     throw DeviceError(stream.str());
@@ -66,17 +71,20 @@ void Capture::openFile(const std::string& file_path)
 
 bool Capture::capture()
 {
-  if(cap_.read(bridge_.image)) {
+  if (cap_.read(bridge_.image))
+  {
     ros::Time now = ros::Time::now();
     bridge_.encoding = enc::BGR8;
     bridge_.header.stamp = now;
     bridge_.header.frame_id = frame_id_;
 
     info_ = info_manager_.getCameraInfo();
-    if (info_.height == 0) {
+    if (info_.height == 0)
+    {
       info_.height = bridge_.image.rows;
     }
-    if (info_.width == 0) {
+    if (info_.width == 0)
+    {
       info_.width = bridge_.image.cols;
     }
     info_.header.stamp = now;
@@ -94,9 +102,11 @@ void Capture::publish()
 
 bool Capture::setPropertyFromParam(int property_id, const std::string &param_name)
 {
-  if (cap_.isOpened()) {
+  if (cap_.isOpened())
+  {
     double value = 0.0;
-    if (node_.getParam(param_name, value)) {
+    if (node_.getParam(param_name, value))
+    {
       ROS_INFO("setting property %s = %lf", param_name.c_str(), value);
       return cap_.set(property_id, value);
     }

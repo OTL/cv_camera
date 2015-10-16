@@ -1,4 +1,7 @@
+// Copyright [2015] Takashi Ogura<t.ogura@gmail.com>
+
 #include "cv_camera/driver.h"
+#include <string>
 
 namespace
 {
@@ -22,31 +25,38 @@ void Driver::setup()
   int32_t device_id(0);
   std::string frame_id("camera");
   std::string file_path("");
-  
+
   private_node_.getParam("device_id", device_id);
   private_node_.getParam("frame_id", frame_id);
   private_node_.getParam("rate", hz);
 
   int32_t image_width(640);
   int32_t image_height(480);
-  
+
   camera_.reset(new Capture(camera_node_,
                             "image_raw",
                             PUBLISHER_BUFFER_SIZE,
                             frame_id));
   if (private_node_.getParam("file", file_path) &&
-      file_path != "") {
+      file_path != "")
+  {
     camera_->openFile(file_path);
-  } else {
+  }
+  else
+  {
     camera_->open(device_id);
   }
-  if (private_node_.getParam("image_width", image_width)) {
-    if(!camera_->setWidth(image_width)) {
+  if (private_node_.getParam("image_width", image_width))
+  {
+    if (!camera_->setWidth(image_width))
+    {
       ROS_WARN("fail to set image_width");
     }
   }
-  if (private_node_.getParam("image_height", image_height)) {
-    if(!camera_->setHeight(image_height)) {
+  if (private_node_.getParam("image_height", image_height))
+  {
+    if (!camera_->setHeight(image_height))
+    {
       ROS_WARN("fail to set image_height");
     }
   }
@@ -72,25 +82,28 @@ void Driver::setup()
   camera_->setPropertyFromParam(CV_CAP_PROP_ISO_SPEED, "cv_cap_prop_iso_speed");
 #ifdef CV_CAP_PROP_WHITE_BALANCE_U
   camera_->setPropertyFromParam(CV_CAP_PROP_WHITE_BALANCE_U, "cv_cap_prop_white_balance_u");
-#endif // CV_CAP_PROP_WHITE_BALANCE_U
+#endif  // CV_CAP_PROP_WHITE_BALANCE_U
 #ifdef CV_CAP_PROP_WHITE_BALANCE_V
   camera_->setPropertyFromParam(CV_CAP_PROP_WHITE_BALANCE_V, "cv_cap_prop_white_balance_v");
-#endif // CV_CAP_PROP_WHITE_BALANCE_V
+#endif  // CV_CAP_PROP_WHITE_BALANCE_V
 #ifdef CV_CAP_PROP_BUFFERSIZE
   camera_->setPropertyFromParam(CV_CAP_PROP_BUFFERSIZE, "cv_cap_prop_buffersize");
-#endif // CV_CAP_PROP_BUFFERSIZE
+#endif  // CV_CAP_PROP_BUFFERSIZE
 
   rate_.reset(new ros::Rate(hz));
 }
 
-void Driver::proceed() {
-  if (camera_->capture()) {
+void Driver::proceed()
+{
+  if (camera_->capture())
+  {
     camera_->publish();
   }
   rate_->sleep();
 }
 
-Driver::~Driver() {
+Driver::~Driver()
+{
 }
 
 }  // namespace cv_camera

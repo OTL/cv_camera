@@ -1,11 +1,14 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(cv_camera)
 
-find_package(catkin REQUIRED COMPONENTS image_transport roscpp cv_bridge sensor_msgs nodelet camera_info_manager rostest)
+find_package(catkin REQUIRED COMPONENTS
+  image_transport roscpp cv_bridge sensor_msgs nodelet camera_info_manager rostest roslint)
 
 find_package(OpenCV REQUIRED)
 
 find_package(Boost REQUIRED COMPONENTS system thread)
+
+roslint_cpp()
 
 catkin_package(
   INCLUDE_DIRS include
@@ -77,6 +80,10 @@ install(FILES cv_camera_nodelets.xml
 #############
 ## Testing ##
 #############
+
+roslint_cpp(
+  src/capture.cpp src/cv_camera_node.cpp src/cv_camera_nodelet.cpp src/driver.cpp
+  )
 
 if (CATKIN_ENABLE_TESTING)
   add_rostest_gtest(test_cv_camera test/cv_camera.test
