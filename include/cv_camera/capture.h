@@ -132,6 +132,17 @@ class Capture
   }
 
   /**
+   * @brief set binning
+   * @return true if success
+   */
+  inline bool setBinning(int32_t bin_x, int32_t bin_y)
+  {
+      binning_x_ = bin_x;
+      binning_y_ = bin_y;
+      return true;
+  }
+
+  /**
    * @brief set CV_PROP_*
    * @return true if success
    */
@@ -188,6 +199,17 @@ class Capture
    * @brief camera info manager
    */
   camera_info_manager::CameraInfoManager info_manager_;
+
+
+  /**
+   * @brief Binning X
+   */
+  int32_t binning_x_;
+
+  /**
+   * @brief Binning Y
+   */
+  int32_t binning_y_;
 };
 
 }  // namespace cv_camera

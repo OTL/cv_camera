@@ -18,7 +18,9 @@ Capture::Capture(ros::NodeHandle& node,
     topic_name_(topic_name),
     buffer_size_(buffer_size),
     frame_id_(frame_id),
-    info_manager_(node_, frame_id)
+    info_manager_(node_, frame_id),
+    binning_x_(0),
+    binning_y_(0)
 {
 }
 
@@ -95,7 +97,7 @@ bool Capture::capture()
   if (cap_.read(bridge_.image))
   {
     ros::Time now = ros::Time::now();
-    bridge_.encoding = enc::BGR8;
+    bridge_.encoding = bridge_.image.channels()==3?enc::BGR8:enc::MONO8;
     bridge_.header.stamp = now;
     bridge_.header.frame_id = frame_id_;
 
@@ -110,6 +112,8 @@ bool Capture::capture()
     }
     info_.header.stamp = now;
     info_.header.frame_id = frame_id_;
+    info_.binning_x = binning_x_;
+    info_.binning_y = binning_y_;
 
     return true;
   }

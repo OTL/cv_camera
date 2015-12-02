@@ -26,6 +26,8 @@ void Driver::setup()
   std::string frame_id("camera");
   std::string file_path("");
 
+  int32_t binning_x = 0, binning_y = 0;
+
   private_node_.getParam("device_id", device_id);
   private_node_.getParam("frame_id", frame_id);
   private_node_.getParam("rate", hz);
@@ -58,6 +60,17 @@ void Driver::setup()
     if (!camera_->setHeight(image_height))
     {
       ROS_WARN("fail to set image_height");
+    }
+  }
+
+  bool bin_x_exists = private_node_.getParam("binning_x", binning_x);
+
+  if ( private_node_.getParam("binning_y", binning_y) ||
+       bin_x_exists )
+  {
+    if (!camera_->setBinning(binning_x, binning_y))
+    {
+      ROS_WARN("fail to set binning");
     }
   }
 
