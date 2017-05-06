@@ -2,6 +2,11 @@
 Changelog for package cv_camera
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.0 (2017-05-05)
+------------------
+* Stop to use OpenCV2
+* rostest is optional
+
 0.1.0 (2015-10-17)
 ------------------
 * Fix opencv2 to libopencv-dev
