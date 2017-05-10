@@ -14,6 +14,7 @@ catkin_package(
   INCLUDE_DIRS include
   LIBRARIES cv_camera
   CATKIN_DEPENDS image_transport roscpp cv_bridge sensor_msgs nodelet camera_info_manager
+  DEPENDS OpenCV
   )
 
 include_directories(
