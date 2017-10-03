@@ -22,17 +22,8 @@ Capture::Capture(ros::NodeHandle& node,
 {
 }
 
-void Capture::open(int32_t device_id)
+void Capture::loadCameraInfo()
 {
-  cap_.open(device_id);
-  if (!cap_.isOpened())
-  {
-    std::stringstream stream;
-    stream << "device_id " << device_id << " cannot be opened";
-    throw DeviceError(stream.str());
-  }
-  pub_ = it_.advertiseCamera(topic_name_, buffer_size_);
-
   std::string url;
   if (node_.getParam("camera_info_url", url))
   {
@@ -62,6 +53,32 @@ void Capture::open(int32_t device_id)
                        << std::endl);
     }
   }
+}
+
+void Capture::open(int32_t device_id)
+{
+  cap_.open(device_id);
+  if(!cap_.isOpened())
+  {
+    std::stringstream stream;
+    stream << "device_id" << device_id << " cannot be opened";
+    throw DeviceError(stream.str());
+  }
+  pub_ = it_.advertiseCamera(topic_name_, buffer_size_);
+
+  loadCameraInfo();
+}
+
+void Capture::open(const std::string& device_path)
+{
+  cap_.open(device_path, cv::CAP_V4L);
+  if (!cap_.isOpened())
+  {
+    throw DeviceError("device_path " + device_path + " cannot be opened");
+  }
+  pub_ = it_.advertiseCamera(topic_name_, buffer_size_);
+
+  loadCameraInfo();
 }
 
 void Capture::open()

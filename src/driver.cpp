@@ -23,6 +23,7 @@ void Driver::setup()
 {
   double hz(DEFAULT_RATE);
   int32_t device_id(0);
+  std::string device_path("");
   std::string frame_id("camera");
   std::string file_path("");
 
@@ -37,10 +38,13 @@ void Driver::setup()
                             "image_raw",
                             PUBLISHER_BUFFER_SIZE,
                             frame_id));
-  if (private_node_.getParam("file", file_path) &&
-      file_path != "")
+
+  if (private_node_.getParam("file", file_path) && file_path != "")
   {
     camera_->openFile(file_path);
+  } else if (private_node_.getParam("device_path", device_path) && device_path != "")
+  {
+    camera_->open(device_path);
   }
   else
   {

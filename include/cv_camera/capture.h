@@ -50,6 +50,21 @@ class Capture
   void open(int32_t device_id);
 
   /**
+   * @brief Open capture device with device name.
+   *
+   * @param device_path path of the camera device
+   * @throw cv_camera::DeviceError device open failed
+   */
+  void open(const std::string& device_path);
+
+  /**
+   * @brief Load camera info from file.
+   *
+   * This loads the camera info from the file specified in the camera_info_url parameter.
+   */
+  void loadCameraInfo();
+
+  /**
    * @brief Open default camera device.
    *
    * This opens with device 0.
