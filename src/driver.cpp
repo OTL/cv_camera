@@ -42,8 +42,7 @@ void Driver::setup()
   if (private_node_.getParam("file", file_path) && file_path != "")
   {
     camera_->openFile(file_path);
-  } else if (private_node_.getParam("device_path", device_path) &&
-      device_path != "")
+  } else if (private_node_.getParam("device_path", device_path) && device_path != "")
   {
     camera_->open(device_path);
   }

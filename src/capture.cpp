@@ -22,7 +22,7 @@ Capture::Capture(ros::NodeHandle& node,
 {
 }
 
-void Capture::load_camera_info()
+void Capture::loadCameraInfo()
 {
   std::string url;
   if (node_.getParam("camera_info_url", url))
@@ -66,10 +66,10 @@ void Capture::open(int32_t device_id)
   }
   pub_ = it_.advertiseCamera(topic_name_, buffer_size_);
 
-  load_camera_info();
+  loadCameraInfo();
 }
 
-void Capture::open(std::string device_path)
+void Capture::open(const std::string& device_path)
 {
   cap_.open(device_path, cv::CAP_V4L);
   if (!cap_.isOpened())
@@ -78,7 +78,7 @@ void Capture::open(std::string device_path)
   }
   pub_ = it_.advertiseCamera(topic_name_, buffer_size_);
 
-  load_camera_info();
+  loadCameraInfo();
 }
 
 void Capture::open()
