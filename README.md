@@ -20,6 +20,7 @@ If no calibration data is set, it has dummy values except for width and height.
 
 * ~rate (double: default 30.0) publish rate [Hz].
 * ~device_id (int: default 0) capture device id.
+* ~device_path (string: default "") path to camera device file, ex) /dev/video0.
 * ~frame_id (string: default "camera") frame_id of message header.
 * ~image_width (int) try to set capture image width.
 * ~image_height (int) try to set capture image height.
