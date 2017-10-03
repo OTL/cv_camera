@@ -2,8 +2,8 @@
 Changelog for package cv_camera
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.0 (2017-10-03)
+------------------
 * Update README.md
 * Add device_path support (`#8 <https://github.com/OTL/cv_camera/issues/8>`_)
   * Add device_path support
