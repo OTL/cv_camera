@@ -77,4 +77,4 @@ class CvCameraNodelet : public nodelet::Nodelet
 }  // end namespace cv_camera
 
 #include <pluginlib/class_list_macros.h>
-PLUGINLIB_DECLARE_CLASS(cv_camera, CvCameraNodelet, cv_camera::CvCameraNodelet, nodelet::Nodelet);
+PLUGINLIB_EXPORT_CLASS(cv_camera::CvCameraNodelet, nodelet::Nodelet)
