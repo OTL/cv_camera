@@ -33,6 +33,8 @@ void Capture::loadCameraInfo()
     }
   }
 
+  rescale_camera_info_ = node_.param<bool>("rescale_camera_info", false);
+
   for (int i = 0; ; ++i)
   {
     int code = 0;
@@ -53,6 +55,25 @@ void Capture::loadCameraInfo()
                        << std::endl);
     }
   }
+}
+
+void Capture::rescaleCameraInfo(int width, int height)
+{
+  double width_coeff = width / info_.width;
+  double height_coeff = height / info_.height;
+  info_.width = width;
+  info_.height = height;
+
+  // See http://docs.ros.org/api/sensor_msgs/html/msg/CameraInfo.html for clarification
+  info_.K[0] *= width_coeff;
+  info_.K[2] *= width_coeff;
+  info_.K[4] *= height_coeff;
+  info_.K[5] *= height_coeff;
+
+  info_.P[0] *= width_coeff;
+  info_.P[2] *= width_coeff;
+  info_.P[5] *= height_coeff;
+  info_.P[6] *= height_coeff;
 }
 
 void Capture::open(int32_t device_id)
@@ -117,13 +138,27 @@ bool Capture::capture()
     bridge_.header.frame_id = frame_id_;
 
     info_ = info_manager_.getCameraInfo();
-    if (info_.height == 0)
+    if (info_.height == 0 && info_.width == 0)
     {
       info_.height = bridge_.image.rows;
-    }
-    if (info_.width == 0)
-    {
       info_.width = bridge_.image.cols;
+    }
+    else if (info_.height != bridge_.image.rows || info_.width != bridge_.image.cols)
+    {
+      if (rescale_camera_info_)
+      {
+        int old_width = info_.width;
+        int old_height = info_.height;
+        rescaleCameraInfo(bridge_.image.cols, bridge_.image.rows);
+        ROS_INFO_ONCE("Camera calibration automatically rescaled from %dx%d to %dx%d",
+                 old_width, old_height, bridge_.image.cols, bridge_.image.rows);
+      }
+      else
+      {
+        ROS_WARN_ONCE("Calibration resolution %dx%d does not match camera resolution %dx%d. "
+                      "Use rescale_camera_info param for rescaling",
+                      info_.width, info_.height, bridge_.image.cols, bridge_.image.rows);
+      }
     }
     info_.header.stamp = now;
     info_.header.frame_id = frame_id_;
