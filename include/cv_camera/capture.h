@@ -154,6 +154,11 @@ class Capture
 
  private:
   /**
+   * @brief rescale camera calibration to another resolution
+   */
+  void rescaleCameraInfo(int width, int height);
+
+  /**
    * @brief node handle for advertise.
    */
   ros::NodeHandle node_;
@@ -203,6 +208,11 @@ class Capture
    * @brief camera info manager
    */
   camera_info_manager::CameraInfoManager info_manager_;
+
+  /**
+   * @brief rescale_camera_info param value
+   */
+  bool rescale_camera_info_;
 };
 
 }  // namespace cv_camera
