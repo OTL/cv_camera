@@ -11,7 +11,8 @@ namespace enc = sensor_msgs::image_encodings;
 
 Capture::Capture(ros::NodeHandle &node, const std::string &topic_name,
                  int32_t buffer_size, const std::string &frame_id)
-    : it_(node_),
+    : node_(node),
+      it_(node_),
       topic_name_(topic_name),
       buffer_size_(buffer_size),
       frame_id_(frame_id),
