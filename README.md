@@ -66,12 +66,13 @@ Nodelet
 
 This node works as nodelet (cv_camera/CvCameraNodelet).
 
-Contributers
+Contributors
 --------------------
 
 PR is welcome. I'll review your code to keep consistency, be patient.
-* Oleg Kalachev <okalachev@gmail.com>
-* Mikael Arguedas <mikael@osrfoundation.org>
-* Maurice Meedendorp <@Seremis>
-* Max Schettler <max.schettler@posteo.de>
-* Lukas Bulwahn <lukas.bulwahn@gmail.com>
+
+* Oleg Kalachev
+* Mikael Arguedas
+* Maurice Meedendorp
+* Max Schettler
+* Lukas Bulwahn
