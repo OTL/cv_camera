@@ -9,16 +9,13 @@ namespace cv_camera
 
 namespace enc = sensor_msgs::image_encodings;
 
-Capture::Capture(ros::NodeHandle& node,
-                 const std::string& topic_name,
-                 int32_t buffer_size,
-                 const std::string& frame_id) :
-    node_(node),
-    it_(node_),
-    topic_name_(topic_name),
-    buffer_size_(buffer_size),
-    frame_id_(frame_id),
-    info_manager_(node_, frame_id)
+Capture::Capture(ros::NodeHandle &node, const std::string &topic_name,
+                 int32_t buffer_size, const std::string &frame_id)
+    : it_(node_),
+      topic_name_(topic_name),
+      buffer_size_(buffer_size),
+      frame_id_(frame_id),
+      info_manager_(node_, frame_id)
 {
 }
 
@@ -35,7 +32,7 @@ void Capture::loadCameraInfo()
 
   rescale_camera_info_ = node_.param<bool>("rescale_camera_info", false);
 
-  for (int i = 0; ; ++i)
+  for (int i = 0;; ++i)
   {
     int code = 0;
     double value = 0.0;
@@ -52,7 +49,7 @@ void Capture::loadCameraInfo()
     if (!cap_.set(code, value))
     {
       ROS_ERROR_STREAM("Setting with code " << code << " and value " << value << " failed"
-                       << std::endl);
+                                            << std::endl);
     }
   }
 }
@@ -79,7 +76,7 @@ void Capture::rescaleCameraInfo(int width, int height)
 void Capture::open(int32_t device_id)
 {
   cap_.open(device_id);
-  if(!cap_.isOpened())
+  if (!cap_.isOpened())
   {
     std::stringstream stream;
     stream << "device_id" << device_id << " cannot be opened";
@@ -90,7 +87,7 @@ void Capture::open(int32_t device_id)
   loadCameraInfo();
 }
 
-void Capture::open(const std::string& device_path)
+void Capture::open(const std::string &device_path)
 {
   cap_.open(device_path, cv::CAP_V4L);
   if (!cap_.isOpened())
@@ -107,7 +104,7 @@ void Capture::open()
   open(0);
 }
 
-void Capture::openFile(const std::string& file_path)
+void Capture::openFile(const std::string &file_path)
 {
   cap_.open(file_path);
   if (!cap_.isOpened())
@@ -151,7 +148,7 @@ bool Capture::capture()
         int old_height = info_.height;
         rescaleCameraInfo(bridge_.image.cols, bridge_.image.rows);
         ROS_INFO_ONCE("Camera calibration automatically rescaled from %dx%d to %dx%d",
-                 old_width, old_height, bridge_.image.cols, bridge_.image.rows);
+                      old_width, old_height, bridge_.image.cols, bridge_.image.rows);
       }
       else
       {
@@ -187,4 +184,4 @@ bool Capture::setPropertyFromParam(int property_id, const std::string &param_nam
   return true;
 }
 
-}  // namespace cv_camera
+} // namespace cv_camera

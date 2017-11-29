@@ -2,7 +2,7 @@
 
 #include "cv_camera/driver.h"
 
-int main(int argc, char**argv)
+int main(int argc, char **argv)
 {
   ros::init(argc, argv, "cv_camera");
   ros::NodeHandle private_node("~");

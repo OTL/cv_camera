@@ -12,10 +12,9 @@ const int32_t PUBLISHER_BUFFER_SIZE = 1;
 namespace cv_camera
 {
 
-Driver::Driver(ros::NodeHandle& private_node,
-               ros::NodeHandle& camera_node) :
-    private_node_(private_node),
-    camera_node_(camera_node)
+Driver::Driver(ros::NodeHandle &private_node, ros::NodeHandle &camera_node)
+    : private_node_(private_node),
+      camera_node_(camera_node)
 {
 }
 
@@ -42,7 +41,8 @@ void Driver::setup()
   if (private_node_.getParam("file", file_path) && file_path != "")
   {
     camera_->openFile(file_path);
-  } else if (private_node_.getParam("device_path", device_path) && device_path != "")
+  }
+  else if (private_node_.getParam("device_path", device_path) && device_path != "")
   {
     camera_->open(device_path);
   }
@@ -86,13 +86,13 @@ void Driver::setup()
   camera_->setPropertyFromParam(CV_CAP_PROP_ISO_SPEED, "cv_cap_prop_iso_speed");
 #ifdef CV_CAP_PROP_WHITE_BALANCE_U
   camera_->setPropertyFromParam(CV_CAP_PROP_WHITE_BALANCE_U, "cv_cap_prop_white_balance_u");
-#endif  // CV_CAP_PROP_WHITE_BALANCE_U
+#endif // CV_CAP_PROP_WHITE_BALANCE_U
 #ifdef CV_CAP_PROP_WHITE_BALANCE_V
   camera_->setPropertyFromParam(CV_CAP_PROP_WHITE_BALANCE_V, "cv_cap_prop_white_balance_v");
-#endif  // CV_CAP_PROP_WHITE_BALANCE_V
+#endif // CV_CAP_PROP_WHITE_BALANCE_V
 #ifdef CV_CAP_PROP_BUFFERSIZE
   camera_->setPropertyFromParam(CV_CAP_PROP_BUFFERSIZE, "cv_cap_prop_buffersize");
-#endif  // CV_CAP_PROP_BUFFERSIZE
+#endif // CV_CAP_PROP_BUFFERSIZE
 
   rate_.reset(new ros::Rate(hz));
 }
@@ -110,4 +110,4 @@ Driver::~Driver()
 {
 }
 
-}  // namespace cv_camera
+} // namespace cv_camera

@@ -13,10 +13,10 @@ namespace cv_camera
  */
 class CvCameraNodelet : public nodelet::Nodelet
 {
- public:
-  CvCameraNodelet() :
-      is_running_(false)
-  {}
+public:
+  CvCameraNodelet() : is_running_(false)
+  {
+  }
   ~CvCameraNodelet()
   {
     if (is_running_)
@@ -26,7 +26,7 @@ class CvCameraNodelet : public nodelet::Nodelet
     }
   }
 
- private:
+private:
   /**
    * @brief Start capture/publish thread.
    */
@@ -38,10 +38,9 @@ class CvCameraNodelet : public nodelet::Nodelet
     {
       driver_->setup();
       is_running_ = true;
-      thread_ = boost::shared_ptr<boost::thread>
-          (new boost::thread(boost::bind(&CvCameraNodelet::main, this)));
+      thread_ = boost::shared_ptr<boost::thread>(new boost::thread(boost::bind(&CvCameraNodelet::main, this)));
     }
-    catch(cv_camera::DeviceError& e)
+    catch (cv_camera::DeviceError &e)
     {
       NODELET_ERROR_STREAM("failed to open device... do nothing: " << e.what());
     }
@@ -74,7 +73,7 @@ class CvCameraNodelet : public nodelet::Nodelet
   boost::shared_ptr<boost::thread> thread_;
 };
 
-}  // end namespace cv_camera
+} // end namespace cv_camera
 
 #include <pluginlib/class_list_macros.h>
 PLUGINLIB_EXPORT_CLASS(cv_camera::CvCameraNodelet, nodelet::Nodelet)

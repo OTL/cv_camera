@@ -26,7 +26,7 @@ namespace cv_camera
  */
 class Capture
 {
- public:
+public:
   /**
    * @brief costruct with ros node and topic settings
    *
@@ -35,10 +35,10 @@ class Capture
    * @param buffer_size size of publisher buffer.
    * @param frame_id frame_id of publishing messages.
    */
-  Capture(ros::NodeHandle& node,
-          const std::string& topic_name,
+  Capture(ros::NodeHandle &node,
+          const std::string &topic_name,
           int32_t buffer_size,
-          const std::string& frame_id);
+          const std::string &frame_id);
 
   /**
    * @brief Open capture device with device ID.
@@ -55,7 +55,7 @@ class Capture
    * @param device_path path of the camera device
    * @throw cv_camera::DeviceError device open failed
    */
-  void open(const std::string& device_path);
+  void open(const std::string &device_path);
 
   /**
    * @brief Load camera info from file.
@@ -76,7 +76,7 @@ class Capture
   /**
    * @brief open video file instead of capture device.
    */
-  void openFile(const std::string& file_path);
+  void openFile(const std::string &file_path);
 
   /**
    * @brief capture an image and store.
@@ -99,7 +99,7 @@ class Capture
    *
    * @return CameraInfo
    */
-  inline const sensor_msgs::CameraInfo& getInfo() const
+  inline const sensor_msgs::CameraInfo &getInfo() const
   {
     return info_;
   }
@@ -111,7 +111,7 @@ class Capture
    *
    * @return captured cv::Mat
    */
-  inline const cv::Mat& getCvImage() const
+  inline const cv::Mat &getCvImage() const
   {
     return bridge_.image;
   }
@@ -152,7 +152,7 @@ class Capture
    */
   bool setPropertyFromParam(int property_id, const std::string &param_name);
 
- private:
+private:
   /**
    * @brief rescale camera calibration to another resolution
    */
@@ -215,6 +215,6 @@ class Capture
   bool rescale_camera_info_;
 };
 
-}  // namespace cv_camera
+} // namespace cv_camera
 
-#endif  // CV_CAMERA_CAPTURE_H
+#endif // CV_CAMERA_CAPTURE_H
