@@ -57,8 +57,8 @@ void Capture::loadCameraInfo()
 
 void Capture::rescaleCameraInfo(int width, int height)
 {
-  double width_coeff = width / info_.width;
-  double height_coeff = height / info_.height;
+  double width_coeff = static_cast<double>(width) / info_.width;
+  double height_coeff = static_cast<double>(height) / info_.height;
   info_.width = width;
   info_.height = height;
 
