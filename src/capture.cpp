@@ -16,7 +16,8 @@ Capture::Capture(ros::NodeHandle &node, const std::string &topic_name,
       topic_name_(topic_name),
       buffer_size_(buffer_size),
       frame_id_(frame_id),
-      info_manager_(node_, frame_id)
+      info_manager_(node_, frame_id),
+      capture_delay_(ros::Duration(node_.param("capture_delay", 0.0)))
 {
 }
 
@@ -130,9 +131,9 @@ bool Capture::capture()
 {
   if (cap_.read(bridge_.image))
   {
-    ros::Time now = ros::Time::now();
+    ros::Time stamp = ros::Time::now() - capture_delay_;
     bridge_.encoding = enc::BGR8;
-    bridge_.header.stamp = now;
+    bridge_.header.stamp = stamp;
     bridge_.header.frame_id = frame_id_;
 
     info_ = info_manager_.getCameraInfo();
@@ -158,7 +159,7 @@ bool Capture::capture()
                       info_.width, info_.height, bridge_.image.cols, bridge_.image.rows);
       }
     }
-    info_.header.stamp = now;
+    info_.header.stamp = stamp;
     info_.header.frame_id = frame_id_;
 
     return true;
