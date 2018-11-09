@@ -9,22 +9,25 @@ namespace cv_camera
 
 namespace enc = sensor_msgs::image_encodings;
 
-Capture::Capture(ros::NodeHandle &node, const std::string &topic_name,
-                 int32_t buffer_size, const std::string &frame_id)
+Capture::Capture(rclcpp::Node::SharedPtr node, const std::string &topic_name,
+                 uint32_t buffer_size, const std::string &frame_id)
     : node_(node),
       it_(node_),
       topic_name_(topic_name),
-      buffer_size_(buffer_size),
       frame_id_(frame_id),
+      buffer_size_(buffer_size),
       info_manager_(node_, frame_id),
-      capture_delay_(ros::Duration(node_.param("capture_delay", 0.0)))
+      capture_delay_(rclcpp::Duration(0))
 {
+    int dur = 0;
+    node_->get_parameter_or("capture_delay",dur,dur);
+    this->capture_delay_ = rclcpp::Duration(dur);
 }
 
 void Capture::loadCameraInfo()
 {
   std::string url;
-  if (node_.getParam("camera_info_url", url))
+  if (node_->get_parameter("camera_info_url", url))
   {
     if (info_manager_.validateURL(url))
     {
@@ -32,7 +35,8 @@ void Capture::loadCameraInfo()
     }
   }
 
-  rescale_camera_info_ = node_.param<bool>("rescale_camera_info", false);
+  rescale_camera_info_  = false;
+  node_->get_parameter_or("rescale_camera_info", rescale_camera_info_, rescale_camera_info_);
 
   for (int i = 0;; ++i)
   {
@@ -44,19 +48,18 @@ void Capture::loadCameraInfo()
     stream.str("");
     stream << "property_" << i << "_value";
     const std::string param_for_value = stream.str();
-    if (!node_.getParam(param_for_code, code) || !node_.getParam(param_for_value, value))
+    if (!node_->get_parameter(param_for_code, code) || !node_->get_parameter(param_for_value, value))
     {
       break;
     }
     if (!cap_.set(code, value))
     {
-      ROS_ERROR_STREAM("Setting with code " << code << " and value " << value << " failed"
-                                            << std::endl);
+      RCLCPP_ERROR(node_->get_logger(),"Setting with code %s and value %s failed", code, value);
     }
   }
 }
 
-void Capture::rescaleCameraInfo(int width, int height)
+void Capture::rescaleCameraInfo(uint width, uint height)
 {
   double width_coeff = static_cast<double>(width) / info_.width;
   double height_coeff = static_cast<double>(height) / info_.height;
@@ -64,15 +67,15 @@ void Capture::rescaleCameraInfo(int width, int height)
   info_.height = height;
 
   // See http://docs.ros.org/api/sensor_msgs/html/msg/CameraInfo.html for clarification
-  info_.K[0] *= width_coeff;
-  info_.K[2] *= width_coeff;
-  info_.K[4] *= height_coeff;
-  info_.K[5] *= height_coeff;
+  info_.k[0] *= width_coeff;
+  info_.k[2] *= width_coeff;
+  info_.k[4] *= height_coeff;
+  info_.k[5] *= height_coeff;
 
-  info_.P[0] *= width_coeff;
-  info_.P[2] *= width_coeff;
-  info_.P[5] *= height_coeff;
-  info_.P[6] *= height_coeff;
+  info_.p[0] *= width_coeff;
+  info_.p[2] *= width_coeff;
+  info_.p[5] *= height_coeff;
+  info_.p[6] *= height_coeff;
 }
 
 void Capture::open(int32_t device_id)
@@ -118,7 +121,7 @@ void Capture::openFile(const std::string &file_path)
   pub_ = it_.advertiseCamera(topic_name_, buffer_size_);
 
   std::string url;
-  if (node_.getParam("camera_info_url", url))
+  if (node_->get_parameter("camera_info_url", url))
   {
     if (info_manager_.validateURL(url))
     {
@@ -131,7 +134,8 @@ bool Capture::capture()
 {
   if (cap_.read(bridge_.image))
   {
-    ros::Time stamp = ros::Time::now() - capture_delay_;
+    rclcpp::Clock system_clock(RCL_SYSTEM_TIME);
+    rclcpp::Time stamp = system_clock.now() - capture_delay_;
     bridge_.encoding = enc::BGR8;
     bridge_.header.stamp = stamp;
     bridge_.header.frame_id = frame_id_;
@@ -149,12 +153,12 @@ bool Capture::capture()
         int old_width = info_.width;
         int old_height = info_.height;
         rescaleCameraInfo(bridge_.image.cols, bridge_.image.rows);
-        ROS_INFO_ONCE("Camera calibration automatically rescaled from %dx%d to %dx%d",
+        RCLCPP_INFO_ONCE(node_->get_logger(),"Camera calibration automatically rescaled from %dx%d to %dx%d",
                       old_width, old_height, bridge_.image.cols, bridge_.image.rows);
       }
       else
       {
-        ROS_WARN_ONCE("Calibration resolution %dx%d does not match camera resolution %dx%d. "
+        RCLCPP_WARN_ONCE(node_->get_logger(),"Calibration resolution %dx%d does not match camera resolution %dx%d. "
                       "Use rescale_camera_info param for rescaling",
                       info_.width, info_.height, bridge_.image.cols, bridge_.image.rows);
       }
@@ -177,9 +181,9 @@ bool Capture::setPropertyFromParam(int property_id, const std::string &param_nam
   if (cap_.isOpened())
   {
     double value = 0.0;
-    if (node_.getParam(param_name, value))
+    if (node_->get_parameter(param_name, value))
     {
-      ROS_INFO("setting property %s = %lf", param_name.c_str(), value);
+      RCLCPP_INFO(node_->get_logger(),"setting property %s = %lf", param_name.c_str(), value);
       return cap_.set(property_id, value);
     }
   }

@@ -1,53 +1,73 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(cv_camera)
 
-find_package(catkin REQUIRED COMPONENTS
-  image_transport roscpp cv_bridge sensor_msgs nodelet camera_info_manager roslint)
+# Default to C99
+if(NOT CMAKE_C_STANDARD)
+  set(CMAKE_C_STANDARD 99)
+endif()
 
-find_package(OpenCV REQUIRED)
+# Default to C++14
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
 
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
+# find dependencies
+find_package(ament_cmake REQUIRED)
+
+
+find_package(OpenCV 3.2 REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(image_transport REQUIRED)
+find_package(cv_bridge REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(cv_bridge REQUIRED)
+find_package(camera_info_manager REQUIRED)
+# find_package(roslint REQUIRED)
+find_package(builtin_interfaces REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system thread)
 
-roslint_cpp()
-
-catkin_package(
-  INCLUDE_DIRS include
-  LIBRARIES cv_camera
-  CATKIN_DEPENDS image_transport roscpp cv_bridge sensor_msgs nodelet camera_info_manager
-  DEPENDS OpenCV
-  )
+# roslint_cpp()
 
 include_directories(
   include
-  ${catkin_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIRS}
   )
 
 ## Declare a cpp library
 add_library(cv_camera src/capture.cpp src/driver.cpp)
-add_library(cv_camera_nodelet src/cv_camera_nodelet.cpp)
 
 
 ## Declare a cpp executable
 add_executable(cv_camera_node src/cv_camera_node.cpp)
 add_dependencies(cv_camera_node cv_camera)
-add_dependencies(cv_camera_nodelet cv_camera)
+
+target_link_libraries(cv_camera_node ${Boost_LIBRARIES} cv_camera)
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(cv_camera
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBS}
-  )
+ament_target_dependencies(cv_camera
+        "rclcpp"
+        "sensor_msgs"
+        "image_transport"
+        "cv_bridge"
+        "camera_info_manager"
+        "std_msgs"
+        "OpenCV"
+)
 
-target_link_libraries(cv_camera_nodelet
-  ${catkin_LIBRARIES}
-  cv_camera
-  )
-
-target_link_libraries(cv_camera_node
-  ${catkin_LIBRARIES}
-  cv_camera
-  )
+ament_target_dependencies(cv_camera_node
+        "rclcpp"
+        "sensor_msgs"
+        "std_msgs"
+        "OpenCV"
+        "camera_info_manager"
+        "image_transport"
+        "cv_bridge"
+)
 
 #############
 ## Install ##
@@ -61,37 +81,12 @@ target_link_libraries(cv_camera_node
 # )
 
 ## Mark executables and/or libraries for installation
-install(TARGETS cv_camera cv_camera_nodelet cv_camera_node
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+install(TARGETS cv_camera cv_camera_node
+  ARCHIVE DESTINATION lib/${PROJECT_NAME}
+  LIBRARY DESTINATION lib/${PROJECT_NAME}
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
   )
 
 install(DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  DESTINATION include/
   )
-
-# add xml file
-install(FILES cv_camera_nodelets.xml
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-  )
-
-
-#############
-## Testing ##
-#############
-
-roslint_cpp(
-  src/capture.cpp src/cv_camera_node.cpp src/cv_camera_nodelet.cpp src/driver.cpp
-  )
-
-if (CATKIN_ENABLE_TESTING)
-  find_package(rostest REQUIRED)
-  add_rostest_gtest(test_cv_camera test/cv_camera.test
-    test/test_cv_camera.cpp)
-  target_link_libraries(test_cv_camera ${PROJECT_NAME} ${catkin_LIBRARIES})
-
-  add_rostest_gtest(test_cv_camera_no_yaml test/no_yaml.test
-    test/test_cv_camera_no_yaml.cpp)
-  target_link_libraries(test_cv_camera_no_yaml ${PROJECT_NAME} ${catkin_LIBRARIES})
-endif()

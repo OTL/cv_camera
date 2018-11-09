@@ -4,22 +4,22 @@
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "cv_camera");
-  ros::NodeHandle private_node("~");
+  rclcpp::init(argc, argv);
+  rclcpp::Node::SharedPtr private_node = std::make_shared<rclcpp::Node>("cv_camera");
   cv_camera::Driver driver(private_node, private_node);
 
   try
   {
     driver.setup();
-    while (ros::ok())
+    while (rclcpp::ok())
     {
       driver.proceed();
-      ros::spinOnce();
+      rclcpp::spin_some(private_node);
     }
   }
   catch (cv_camera::DeviceError &e)
   {
-    ROS_ERROR_STREAM("cv camera open failed: " << e.what());
+    RCLCPP_ERROR(private_node->get_logger(),"cv camera open failed: %s", e.what());
     return 1;
   }
 

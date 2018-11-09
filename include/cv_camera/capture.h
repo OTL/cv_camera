@@ -6,11 +6,11 @@
 #include "cv_camera/exception.h"
 #include <string>
 
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
-#include <sensor_msgs/CameraInfo.h>
-#include <sensor_msgs/image_encodings.h>
+#include <sensor_msgs/msg/camera_info.hpp>
+#include <sensor_msgs/image_encodings.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <camera_info_manager/camera_info_manager.h>
 
@@ -35,9 +35,9 @@ public:
    * @param buffer_size size of publisher buffer.
    * @param frame_id frame_id of publishing messages.
    */
-  Capture(ros::NodeHandle &node,
+  Capture(rclcpp::Node::SharedPtr node,
           const std::string &topic_name,
-          int32_t buffer_size,
+          uint32_t buffer_size,
           const std::string &frame_id);
 
   /**
@@ -99,7 +99,7 @@ public:
    *
    * @return CameraInfo
    */
-  inline const sensor_msgs::CameraInfo &getInfo() const
+  inline const sensor_msgs::msg::CameraInfo &getInfo() const
   {
     return info_;
   }
@@ -123,7 +123,7 @@ public:
    *
    * @return message pointer.
    */
-  inline const sensor_msgs::ImagePtr getImageMsgPtr() const
+  inline const sensor_msgs::msg::Image::SharedPtr getImageMsgPtr() const
   {
     return bridge_.toImageMsg();
   }
@@ -156,12 +156,12 @@ private:
   /**
    * @brief rescale camera calibration to another resolution
    */
-  void rescaleCameraInfo(int width, int height);
+  void rescaleCameraInfo(uint width, uint height);
 
   /**
    * @brief node handle for advertise.
    */
-  ros::NodeHandle node_;
+  rclcpp::Node::SharedPtr node_;
 
   /**
    * @brief ROS image transport utility.
@@ -180,7 +180,7 @@ private:
   /**
    * @brief size of publisher buffer
    */
-  int32_t buffer_size_;
+  uint32_t buffer_size_;
 
   /**
    * @brief image publisher created by image_transport::ImageTransport.
@@ -202,7 +202,7 @@ private:
    *
    * currently this has image size (width/height) only.
    */
-  sensor_msgs::CameraInfo info_;
+  sensor_msgs::msg::CameraInfo info_;
 
   /**
    * @brief camera info manager
@@ -217,7 +217,7 @@ private:
   /**
    * @brief capture_delay param value
    */
-  ros::Duration capture_delay_;
+  rclcpp::Duration capture_delay_;
 };
 
 } // namespace cv_camera

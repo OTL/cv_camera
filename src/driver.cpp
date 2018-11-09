@@ -12,7 +12,7 @@ const int32_t PUBLISHER_BUFFER_SIZE = 1;
 namespace cv_camera
 {
 
-Driver::Driver(ros::NodeHandle &private_node, ros::NodeHandle &camera_node)
+Driver::Driver(rclcpp::Node::SharedPtr private_node, rclcpp::Node::SharedPtr camera_node)
     : private_node_(private_node),
       camera_node_(camera_node)
 {
@@ -26,9 +26,9 @@ void Driver::setup()
   std::string frame_id("camera");
   std::string file_path("");
 
-  private_node_.getParam("device_id", device_id);
-  private_node_.getParam("frame_id", frame_id);
-  private_node_.getParam("rate", hz);
+  private_node_->get_parameter("device_id", device_id);
+  private_node_->get_parameter("frame_id", frame_id);
+  private_node_->get_parameter("rate", hz);
 
   int32_t image_width(640);
   int32_t image_height(480);
@@ -38,11 +38,11 @@ void Driver::setup()
                             PUBLISHER_BUFFER_SIZE,
                             frame_id));
 
-  if (private_node_.getParam("file", file_path) && file_path != "")
+  if (private_node_->get_parameter("file", file_path) && file_path != "")
   {
     camera_->openFile(file_path);
   }
-  else if (private_node_.getParam("device_path", device_path) && device_path != "")
+  else if (private_node_->get_parameter("device_path", device_path) && device_path != "")
   {
     camera_->open(device_path);
   }
@@ -50,18 +50,18 @@ void Driver::setup()
   {
     camera_->open(device_id);
   }
-  if (private_node_.getParam("image_width", image_width))
+  if (private_node_->get_parameter("image_width", image_width))
   {
     if (!camera_->setWidth(image_width))
     {
-      ROS_WARN("fail to set image_width");
+      RCLCPP_WARN(private_node_->get_logger(),"fail to set image_width");
     }
   }
-  if (private_node_.getParam("image_height", image_height))
+  if (private_node_->get_parameter("image_height", image_height))
   {
     if (!camera_->setHeight(image_height))
     {
-      ROS_WARN("fail to set image_height");
+      RCLCPP_WARN(private_node_->get_logger(),"fail to set image_height");
     }
   }
 
@@ -94,7 +94,7 @@ void Driver::setup()
   camera_->setPropertyFromParam(CV_CAP_PROP_BUFFERSIZE, "cv_cap_prop_buffersize");
 #endif // CV_CAP_PROP_BUFFERSIZE
 
-  rate_.reset(new ros::Rate(hz));
+  rate_.reset(new rclcpp::Rate(hz));
 }
 
 void Driver::proceed()
