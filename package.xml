@@ -17,8 +17,12 @@
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
   <exec_depend>message_filters</exec_depend>
-  <build_depend>objectdetector_msgs</build_depend>
-  <exec_depend>objectdetector_msgs</exec_depend>
+  <build_depend>image_transport</build_depend>
+  <exec_depend>image_transport</exec_depend>
+  <build_depend>cv_bridge</build_depend>
+  <exec_depend>cv_bridge</exec_depend>
+  <build_depend>camera_info_manager</build_depend>
+  <exec_depend>camera_info_manager</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
