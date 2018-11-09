@@ -90,3 +90,5 @@ install(TARGETS cv_camera cv_camera_node
 install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION include/
   )
+
+ament_package()

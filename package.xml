@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>cv_camera</name>
-  <version>0.3.0-ros2</version>
+  <version>0.3.1</version>
   <description>cv_camera uses OpenCV capture object to capture camera image.
   This supports camera_image and nodelet.
   </description>
