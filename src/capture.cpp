@@ -120,14 +120,7 @@ void Capture::openFile(const std::string &file_path)
   }
   pub_ = it_.advertiseCamera(topic_name_, buffer_size_);
 
-  std::string url;
-  if (node_->get_parameter("camera_info_url", url))
-  {
-    if (info_manager_.validateURL(url))
-    {
-      info_manager_.loadCameraInfo(url);
-    }
-  }
+  loadCameraInfo();
 }
 
 bool Capture::capture()
