@@ -3,6 +3,8 @@ ROS OpenCV camera driver
 
 It is very easy to capture video device if we use `cv::VideoCapture` of OpenCV.
 
+If you are searching ROS2 driver, check [here](https://github.com/Kapernikov/cv_camera)
+
 cv_camera_node
 ------------------
 
