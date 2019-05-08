@@ -2,8 +2,8 @@
 Changelog for package cv_camera
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.0 (2019-05-08)
+------------------
 * Update for Melodic release
   Use libopencv-dev instead of opencv3
 * Add link to ROS2 fork
