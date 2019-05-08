@@ -2,6 +2,27 @@
 Changelog for package cv_camera
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update for Melodic release
+  Use libopencv-dev instead of opencv3
+* Add link to ROS2 fork
+* Improve README.md style
+* Add capture_delay parameter
+* Fix rescaling coefficient calculation (#15)
+* Remove mail address of contributors
+* Fix topic names
+  Before this change, /image_raw, /camera_info is published.
+  But that is not designed. As in README.md, it publishes
+  ~image_raw, ~camera_info, that means it contains node name
+  as prefix. This is broken so long time ago, (and test was
+  failing.)
+* Add contributers in README
+* Format code
+* Automatic rescaling camera info with rescale_camera_info parameter (#10) (#13)
+* update to use non deprecated pluginlib macro (#9)
+* Contributors: Mikael Arguedas, Oleg Kalachev, Takashi Ogura
+
 0.3.0 (2017-10-03)
 ------------------
 * Update README.md
