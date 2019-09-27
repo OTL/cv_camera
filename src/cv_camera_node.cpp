@@ -5,7 +5,8 @@
 int main(int argc, char **argv)
 {
   rclcpp::init(argc, argv);
-  rclcpp::Node::SharedPtr private_node = std::make_shared<rclcpp::Node>("cv_camera");
+  auto opts = rclcpp::NodeOptions().automatically_declare_parameters_from_overrides(true);
+  rclcpp::Node::SharedPtr private_node = std::make_shared<rclcpp::Node>("cv_camera", opts);
   cv_camera::Driver driver(private_node, private_node);
 
   try
