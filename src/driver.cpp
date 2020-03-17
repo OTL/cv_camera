@@ -25,10 +25,15 @@ void Driver::setup()
   std::string device_path("");
   std::string frame_id("camera");
   std::string file_path("");
+  std::string camera_name("");
 
   private_node_.getParam("device_id", device_id);
   private_node_.getParam("frame_id", frame_id);
   private_node_.getParam("rate", hz);
+  if (!private_node_.getParam("camera_name", camera_name))
+  {
+    camera_name = frame_id;
+  }
 
   int32_t image_width(640);
   int32_t image_height(480);
@@ -36,7 +41,8 @@ void Driver::setup()
   camera_.reset(new Capture(camera_node_,
                             "image_raw",
                             PUBLISHER_BUFFER_SIZE,
-                            frame_id));
+                            frame_id,
+                            camera_name));
 
   if (private_node_.getParam("file", file_path) && file_path != "")
   {
