@@ -34,11 +34,13 @@ public:
    * @param topic_name name of topic to publish (this may be image_raw).
    * @param buffer_size size of publisher buffer.
    * @param frame_id frame_id of publishing messages.
+   * @param camera_name camera name for camera_info_manager.
    */
   Capture(ros::NodeHandle &node,
           const std::string &topic_name,
           int32_t buffer_size,
-          const std::string &frame_id);
+          const std::string &frame_id,
+          const std::string &camera_name);
 
   /**
    * @brief Open capture device with device ID.
