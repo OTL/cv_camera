@@ -19,7 +19,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 
 
-find_package(OpenCV 3.2 REQUIRED)
+find_package(OpenCV 4 REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(image_transport REQUIRED)
