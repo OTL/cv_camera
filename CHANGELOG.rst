@@ -2,6 +2,11 @@
 Changelog for package cv_camera
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Adding MONO8 format if number of channels is 1
+* Contributors: Servando
+
 0.5.0 (2020-05-30)
 ------------------
 * Use OpenCV 3.x+ enums instead of 2.x defines (#28)
