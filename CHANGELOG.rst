@@ -2,8 +2,8 @@
 Changelog for package cv_camera
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.6.0 (2021-07-06)
+------------------
 * Adding MONO8 format if number of channels is 1
 * Contributors: Servando
 
