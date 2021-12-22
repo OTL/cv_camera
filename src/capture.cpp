@@ -80,7 +80,7 @@ void Capture::rescaleCameraInfo(uint width, uint height)
 
 void Capture::open(int32_t device_id)
 {
-  cap_.open(device_id);
+  cap_.open(device_id, cv::CAP_V4L2);
   if (!cap_.isOpened())
   {
     std::stringstream stream;
@@ -94,7 +94,7 @@ void Capture::open(int32_t device_id)
 
 void Capture::open(const std::string &device_path)
 {
-  cap_.open(device_path, cv::CAP_V4L);
+  cap_.open(device_path, cv::CAP_V4L2);
   if (!cap_.isOpened())
   {
     throw DeviceError("device_path " + device_path + " cannot be opened");
