@@ -33,6 +33,10 @@ void Capture::loadCameraInfo()
     {
       info_manager_.loadCameraInfo(url);
     }
+    else
+    {
+        RCLCPP_ERROR(node_->get_logger(), "Invalid camera info URL %s", url.c_str());
+    }
   }
 
   rescale_camera_info_  = false;
@@ -87,7 +91,10 @@ void Capture::open(int32_t device_id)
     stream << "device_id" << device_id << " cannot be opened";
     throw DeviceError(stream.str());
   }
-  pub_ = it_.advertiseCamera(topic_name_, buffer_size_);
+  // pub_ = it_.advertiseCamera(topic_name_, buffer_size_);
+  rmw_qos_profile_t custom_qos = rmw_qos_profile_sensor_data;
+  custom_qos.depth = buffer_size_;
+  pub_ = image_transport::create_camera_publisher(node_.get(), topic_name_, custom_qos);
 
   loadCameraInfo();
 }
@@ -99,7 +106,10 @@ void Capture::open(const std::string &device_path)
   {
     throw DeviceError("device_path " + device_path + " cannot be opened");
   }
-  pub_ = it_.advertiseCamera(topic_name_, buffer_size_);
+  // pub_ = it_.advertiseCamera(topic_name_, buffer_size_);
+  rmw_qos_profile_t custom_qos = rmw_qos_profile_sensor_data;
+  custom_qos.depth = buffer_size_;
+  pub_ = image_transport::create_camera_publisher(node_.get(), topic_name_, custom_qos);
 
   loadCameraInfo();
 }
@@ -118,7 +128,10 @@ void Capture::openFile(const std::string &file_path)
     stream << "file " << file_path << " cannot be opened";
     throw DeviceError(stream.str());
   }
-  pub_ = it_.advertiseCamera(topic_name_, buffer_size_);
+  // pub_ = it_.advertiseCamera(topic_name_, buffer_size_);
+  rmw_qos_profile_t custom_qos = rmw_qos_profile_sensor_data;
+  custom_qos.depth = buffer_size_;  
+  pub_ = image_transport::create_camera_publisher(node_.get(), topic_name_, custom_qos);
 
   loadCameraInfo();
 }
