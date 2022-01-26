@@ -63,10 +63,10 @@ And supports any props. Thanks to Hernan Badino!
 If you want to set the property which code is 404 as 1,
 
 ```bash
-rosrun cv_camera cv_camera_node _property_0_code:=404 _property_0_code:=1
+rosrun cv_camera cv_camera_node _property_0_code:=404 _property_0_value:=1
 ```
 
-If you want to set more, use `~property_1_code` and `~property_1_code`.
+If you want to set more, use `~property_1_code` and `~property_1_value`.
 
 Nodelet
 -------------------
