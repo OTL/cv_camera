@@ -49,6 +49,10 @@ class Driver
    */
   rclcpp::Node::SharedPtr camera_node_;
   /**
+   * @brief ROS private timer for publishing images.
+   */
+  rclcpp::TimerBase::SharedPtr publish_tmr_;
+  /**
    * @brief wrapper of cv::VideoCapture.
    */
   std::shared_ptr<Capture> camera_;

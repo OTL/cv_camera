@@ -20,7 +20,7 @@ Driver::Driver(rclcpp::Node::SharedPtr private_node, rclcpp::Node::SharedPtr cam
 
 void Driver::setup()
 {
-  double hz(DEFAULT_RATE);
+  double hz_pub(DEFAULT_RATE), hz_read(DEFAULT_RATE);
   int32_t device_id(0);
   std::string device_path("");
   std::string frame_id("camera");
@@ -28,7 +28,8 @@ void Driver::setup()
 
   private_node_->get_parameter("device_id", device_id);
   private_node_->get_parameter("frame_id", frame_id);
-  private_node_->get_parameter("rate", hz);
+  private_node_->get_parameter("read_rate", hz_read);
+  private_node_->get_parameter("publish_rate", hz_pub);
 
   int32_t image_width(640);
   int32_t image_height(480);
@@ -84,6 +85,12 @@ void Driver::setup()
 
   camera_->setPropertyFromParam(cv::CAP_PROP_RECTIFICATION, "cv_cap_prop_rectification");
   camera_->setPropertyFromParam(cv::CAP_PROP_ISO_SPEED, "cv_cap_prop_iso_speed");
+  publish_tmr_ = camera_node_->create_wall_timer(std::chrono::milliseconds(int(1000.0/hz_pub)), [&](){
+  if (camera_->capture())
+    {   
+      camera_->publish();
+    }
+  });
 #ifdef CV_CAP_PROP_WHITE_BALANCE_U
   camera_->setPropertyFromParam(cv::CAP_PROP_WHITE_BALANCE_U, "cv_cap_prop_white_balance_u");
 #endif // CV_CAP_PROP_WHITE_BALANCE_U
@@ -94,15 +101,12 @@ void Driver::setup()
   camera_->setPropertyFromParam(cv::CAP_PROP_BUFFERSIZE, "cv_cap_prop_buffersize");
 #endif // CV_CAP_PROP_BUFFERSIZE
 
-  rate_.reset(new rclcpp::Rate(hz));
+  rate_.reset(new rclcpp::Rate(hz_read));
 }
 
 void Driver::proceed()
 {
-  if (camera_->capture())
-  {
-    camera_->publish();
-  }
+  camera_->grab();
   rate_->sleep();
 }
 

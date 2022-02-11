@@ -87,6 +87,13 @@ public:
   bool capture();
 
   /**
+   * @brief pull an image from the camera but dont decode it
+   *
+   * @return true if success to pull, false if not pulled.
+   */
+  bool grab();
+
+  /**
    * @brief Publish the image that is already captured by capture().
    *
    */
