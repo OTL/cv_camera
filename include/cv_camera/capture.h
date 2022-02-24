@@ -220,6 +220,16 @@ private:
    * @brief capture_delay param value
    */
   ros::Duration capture_delay_;
+
+  // Skammi extension
+  /**
+   * @brief
+   * flip parameter value true or false
+   * image_flip_code parameter value see opencv flip
+   */
+  bool flip_image_ {false};				// Image to be flipped, default false
+  int image_flip_code_ {-1};			// Default horizontal and vertical
+
 };
 
 } // namespace cv_camera

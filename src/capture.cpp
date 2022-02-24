@@ -20,6 +20,10 @@ Capture::Capture(ros::NodeHandle &node, const std::string &topic_name,
       info_manager_(node_, camera_name),
       capture_delay_(ros::Duration(node_.param("capture_delay", 0.0)))
 {
+	// Skammi Extension
+	// Get the flip parameters
+	node_.param("flip_image", flip_image_, flip_image_);
+	node_.param("image_flip_code", image_flip_code_, image_flip_code_);
 }
 
 void Capture::loadCameraInfo()
@@ -136,6 +140,12 @@ bool Capture::capture()
     bridge_.encoding = bridge_.image.channels() == 3 ? enc::BGR8 : enc::MONO8;
     bridge_.header.stamp = stamp;
     bridge_.header.frame_id = frame_id_;
+
+	// Skammi extension
+	// Flip the image?
+	if (flip_image_) {
+		cv::flip(bridge_.image, bridge_.image, image_flip_code_);
+	}
 
     info_ = info_manager_.getCameraInfo();
     if (info_.height == 0 && info_.width == 0)
