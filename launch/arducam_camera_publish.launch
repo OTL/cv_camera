@@ -1,0 +1,16 @@
+<!-- adapted for use with ArduCam --> 
+<launch>
+  <node pkg="cv_camera" type="cv_camera_node" name="cv_camera" output="screen">
+ 	<!-- minimum size for ardu cam is 640 x 480 -->
+    <param name="image_width" value="640"/>
+    <param name="image_height" value="480"/>
+    <param name="rate" value="30"/>
+    <param name="frame_id" value="camera"/>
+ 	<!-- Need to be able to change the device ID default is 0 , wich is the deskcam in a laptop -->
+    <param name="device_id" value="2"/>
+  	<!-- ArduCam is mounted upside down on turtlebot3, needs flipping, available in adpated cv_camera-->
+    <param name="flip_image" value="true"/>
+    <param name="image_flip_code" value="-1"/>
+
+  </node>
+</launch>

@@ -33,6 +33,8 @@ If no calibration data is set, it has dummy values except for width and height.
 * `~capture_delay` (*double*, default: 0) – estimated duration of capturing and receiving the image.
 * `~rescale_camera_info` (*bool*, default: false) – rescale camera calibration info automatically.
 * `~camera_name` (*bool*, default: same as `frame_id`) – camera name for `camera_info_manager`.
+* `~flip_image` (*bool*, default: false) – flip the image according to image_flip_code.
+* `~image_flip_code` (*int*, default: -1) – code to flip the image see cv::flip() for description.
 
 Supports CV_CAP_PROP_*, by below params.
 

@@ -2,6 +2,12 @@
 Changelog for package cv_camera
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.1 (2022_02-24)
+* Adding option to flip image at source using cv::flip function.
+  Useful for cameras mounted upside down, without the option to
+  flip the image in the camera, i.e. ArduCam
+* Contributors: Skammi
+
 0.6.0 (2021-07-06)
 ------------------
 * Adding MONO8 format if number of channels is 1
