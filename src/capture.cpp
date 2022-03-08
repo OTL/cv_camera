@@ -92,7 +92,7 @@ void Capture::open(int32_t device_id)
 
 void Capture::open(const std::string &device_path)
 {
-  cap_.open(device_path, cv::CAP_V4L);
+  cap_.open(device_path,cv::CAP_GSTREAMER);
   if (!cap_.isOpened())
   {
     throw DeviceError("device_path " + device_path + " cannot be opened");
