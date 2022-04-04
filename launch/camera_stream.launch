@@ -1,0 +1,9 @@
+<launch>
+
+    <!-- Camera driver - IP is stored in /greengrass/v2/work/driveu.teleop.coco/layouts/V4L2_4_640x480_cams_1440x672_to_1152x672/cameras.yaml -->
+    <node name="camera_front" pkg="cv_camera" type="cv_camera_node" output="screen" respawn="true">
+        <param name="device_path" value="rtspsrc location=rtsp://192.168.8.54:554/user=admin&amp;password=&amp;channel=1&amp;stream=1.sdp latency=0 ! rtph264depay ! nvv4l2decoder enable-max-performance=true ! nvvidconv ! video/x-raw,,width=256,height=256,format=(string)BGRx ! videoconvert ! video/x-raw,format=BGR ! videoflip method=counterclockwise ! appsink max-buffers=1 drop=true"/>
+        <param name="rate" value="10"/>
+    </node>
+
+</launch>
