@@ -25,38 +25,44 @@ find_package(rclcpp REQUIRED)
 find_package(image_transport REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(std_msgs REQUIRED)
-find_package(cv_bridge REQUIRED)
 find_package(camera_info_manager REQUIRED)
 # find_package(roslint REQUIRED)
 find_package(builtin_interfaces REQUIRED)
-find_package(Boost REQUIRED COMPONENTS system thread)
-
+# find_package(Boost REQUIRED COMPONENTS system thread)
+find_package(PkgConfig REQUIRED)
+pkg_search_module(tinyxml2 REQUIRED tinyxml2)
 # roslint_cpp()
 
 include_directories(
   include
-  ${Boost_INCLUDE_DIRS}
+  # ${Boost_INCLUDE_DIRS}
   )
 
 ## Declare a cpp library
-add_library(cv_camera src/capture.cpp src/driver.cpp)
+add_library(cv_camera_driver src/capture.cpp src/driver.cpp)
 
 
 ## Declare a cpp executable
 add_executable(cv_camera_node src/cv_camera_node.cpp)
-add_dependencies(cv_camera_node cv_camera)
+# add_dependencies(cv_camera_node cv_camera_driver)
 
-target_link_libraries(cv_camera_node ${Boost_LIBRARIES} cv_camera)
+target_link_libraries(cv_camera_node cv_camera_driver)
 
+
+set(CV_DRIVER_DEPENDENCIES
+rclcpp
+sensor_msgs
+image_transport
+cv_bridge
+camera_info_manager
+std_msgs
+OpenCV
+tinyxml2
+
+)
 ## Specify libraries to link a library or executable target against
-ament_target_dependencies(cv_camera
-        "rclcpp"
-        "sensor_msgs"
-        "image_transport"
-        "cv_bridge"
-        "camera_info_manager"
-        "std_msgs"
-        "OpenCV"
+ament_target_dependencies(cv_camera_driver
+  ${CV_DRIVER_DEPENDENCIES}
 )
 
 ament_target_dependencies(cv_camera_node
@@ -68,6 +74,10 @@ ament_target_dependencies(cv_camera_node
         "image_transport"
         "cv_bridge"
 )
+
+ament_export_targets(export_cv_camera_driver HAS_LIBRARY_TARGET)
+
+ament_export_dependencies(${CV_DRIVER_DEPENDENCIES})
 
 #############
 ## Install ##
@@ -81,19 +91,31 @@ ament_target_dependencies(cv_camera_node
 # )
 
 ## Mark executables and/or libraries for installation
-install(TARGETS cv_camera cv_camera_node
+install(TARGETS cv_camera_driver 
+  EXPORT export_cv_camera_driver
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include
+  )
+
+install(
+  TARGETS cv_camera_node
   ARCHIVE DESTINATION lib/${PROJECT_NAME}
   LIBRARY DESTINATION lib/${PROJECT_NAME}
   RUNTIME DESTINATION lib/${PROJECT_NAME}
+  INCLUDES DESTINATION include
   )
 
 install(DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION include/
+  DESTINATION include/${PROJECT_NAME}/
   )
 
 install(DIRECTORY
   launch
   DESTINATION share/${PROJECT_NAME}
   )
+
+ament_export_include_directories(include)
 
 ament_package()
