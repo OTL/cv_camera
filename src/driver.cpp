@@ -25,17 +25,19 @@ void Driver::setup()
   std::string device_path("");
   std::string frame_id("camera");
   std::string file_path("");
+  std::string topic_name("");
 
   private_node_->get_parameter("device_id", device_id);
   private_node_->get_parameter("frame_id", frame_id);
   private_node_->get_parameter("read_rate", hz_read);
   private_node_->get_parameter("publish_rate", hz_pub);
+  private_node_->get_parameter("topic_name", topic_name);
 
   int32_t image_width(640);
   int32_t image_height(480);
 
   camera_.reset(new Capture(camera_node_,
-                            "image_raw",
+                            topic_name,
                             PUBLISHER_BUFFER_SIZE,
                             frame_id));
 
