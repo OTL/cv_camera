@@ -101,7 +101,10 @@ void Capture::open(int32_t device_id)
 
 void Capture::open(const std::string &device_path)
 {
-  cap_.open(device_path, cv::CAP_V4L2);
+  std::string device = det_device_path(device_path.c_str());
+  
+  std::cout << device << std::endl;
+  cap_.open(device, cv::CAP_V4L2);
   if (!cap_.isOpened())
   {
     throw DeviceError("device_path " + device_path + " cannot be opened");
@@ -202,6 +205,41 @@ bool Capture::grab()
     return false;
   }
   return cap_.grab();
+}
+
+std::string Capture::execute_command(const char* command)
+{
+  std::array<char, 128> buffer;
+  std::string result;
+  std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(command, "r"), pclose);
+  if (!pipe) {
+      throw std::runtime_error("popen() failed!");
+  }
+  while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+      result += buffer.data();
+  }
+  // Debug print
+  std::cout << result << std::endl;
+
+  return result;
+}
+std::string Capture::det_device_path(const char* port)
+{
+  std::string video_devices = execute_command("ls /dev/video*");
+  std::string delimiter = "\n";
+
+  size_t pos = 0;
+  std::string token;
+  std::string output_command;
+  while ((pos = video_devices.find(delimiter)) != std::string::npos) {
+      token = video_devices.substr(0, pos);
+      std::cout << token << std::endl;
+      output_command = "udevadm info --query=path --name="+token;
+      std::cout << output_command << std::endl;
+      
+      video_devices.erase(0, pos + delimiter.length());
+  }
+  // std::cout << video_devices << std::endl;
 }
 
 } // namespace cv_camera

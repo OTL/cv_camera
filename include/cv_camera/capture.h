@@ -57,6 +57,23 @@ public:
    */
   void open(const std::string &device_path);
 
+
+  /**
+   * @brief Finds the equivalent camera device associated to
+   *        one port.
+   * @param command Terminal command to be executed
+   * @return command_output::Command output delivered by the terminal
+   */
+  std::string execute_command(const char* command);
+
+  /**
+   * @brief Finds the equivalent camera device associated to 
+   *        one port.
+   * @param port Port number of interest
+   * @return device_path::DeviceError device open failed
+   */
+  std::string det_device_path(const char* port);
+
   /**
    * @brief Load camera info from file.
    *
