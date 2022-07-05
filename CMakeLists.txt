@@ -29,8 +29,6 @@ find_package(camera_info_manager REQUIRED)
 # find_package(roslint REQUIRED)
 find_package(builtin_interfaces REQUIRED)
 # find_package(Boost REQUIRED COMPONENTS system thread)
-find_package(PkgConfig REQUIRED)
-pkg_search_module(tinyxml2 REQUIRED tinyxml2)
 # roslint_cpp()
 
 include_directories(
@@ -57,7 +55,6 @@ cv_bridge
 camera_info_manager
 std_msgs
 OpenCV
-tinyxml2
 
 )
 ## Specify libraries to link a library or executable target against
