@@ -225,6 +225,7 @@ std::string Capture::execute_command(const char* command)
 }
 std::string Capture::det_device_path(const char* port)
 {
+  std::string video_device;
   std::string video_devices = execute_command("ls /dev/video*");
   std::string delimiter = "\n";
 
@@ -236,6 +237,15 @@ std::string Capture::det_device_path(const char* port)
       std::cout << token << std::endl;
       output_command = "udevadm info --query=path --name="+token;
       std::cout << output_command << std::endl;
+      std::string camera_device_info = execute_command(output_command);
+      std::cout << camera_device_info << std::endl;
+      if (camera_device_info.find(port) != std::string::npos)
+      {
+        video_device=token;
+        return video_device
+      }
+      
+
       
       video_devices.erase(0, pos + delimiter.length());
   }
