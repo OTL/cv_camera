@@ -34,7 +34,7 @@ class Driver
    *
    * @throw cv_camera::DeviceError device open failed.
    */
-  void setup();
+  bool setup();
   /**
    * @brief Capture, publish and sleep
    */

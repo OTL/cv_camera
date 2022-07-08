@@ -55,7 +55,7 @@ public:
    * @param device_path path of the camera device
    * @throw cv_camera::DeviceError device open failed
    */
-  void open(const std::string &device_path);
+  bool open(const std::string &device_path);
 
 
   /**

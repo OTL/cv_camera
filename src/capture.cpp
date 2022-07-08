@@ -99,11 +99,20 @@ void Capture::open(int32_t device_id)
   loadCameraInfo();
 }
 
-void Capture::open(const std::string &device_path)
+bool Capture::open(const std::string &device_path)
 {
   std::string device = det_device_path(device_path.c_str());
-  
-  std::cout << device << std::endl;
+
+  if (device.empty())
+  {
+    std::cout << "Camera Not found " << device << std::endl;
+    return false;
+  }
+  else
+  {
+    std::cout << "The device is located in " << device << std::endl;
+  }
+
   cap_.open(device, cv::CAP_V4L2);
   if (!cap_.isOpened())
   {
@@ -115,6 +124,7 @@ void Capture::open(const std::string &device_path)
   pub_ = image_transport::create_camera_publisher(node_.get(), topic_name_, custom_qos);
 
   loadCameraInfo();
+  return true;
 }
 
 void Capture::open()
@@ -218,8 +228,8 @@ std::string Capture::execute_command(const char* command)
   while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
       result += buffer.data();
   }
-  // Debug print
-  std::cout << result << std::endl;
+//   // Debug print
+//   std::cout << result << std::endl;
 
   return result;
 }
@@ -234,15 +244,15 @@ std::string Capture::det_device_path(const char* port)
   std::string output_command;
   while ((pos = video_devices.find(delimiter)) != std::string::npos) {
       token = video_devices.substr(0, pos);
-      std::cout << token << std::endl;
+
       output_command = "udevadm info --query=path --name="+token;
-      std::cout << output_command << std::endl;
-      std::string camera_device_info = execute_command(output_command);
-      std::cout << camera_device_info << std::endl;
+
+      std::string camera_device_info = execute_command(output_command.c_str());
+
       if (camera_device_info.find(port) != std::string::npos)
       {
         video_device=token;
-        return video_device
+        return video_device;
       }
       
 
