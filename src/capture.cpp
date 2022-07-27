@@ -114,9 +114,24 @@ bool Capture::open(const std::string &device_path)
   }
 
   cap_.open(device, cv::CAP_V4L2);
-  if (!cap_.isOpened())
+  
+  std::chrono::milliseconds video_recovery_time(VIDEO_STREAM_CAM_RECOVERY_TIME*1000); // or whatever
+
+  
+  while (!cap_.isOpened() && m_reconnection_attempts < 10)
   {
-    throw DeviceError("device_path " + device_path + " cannot be opened");
+    m_reconnection_attempts +=1;
+    RCLCPP_ERROR(node_->get_logger(),"Error while opening %s. Retrying %d/10 ", device_path.c_str(), m_reconnection_attempts);
+    cap_.open(device, cv::CAP_V4L2);
+    std::this_thread::sleep_for(video_recovery_time);
+  }
+  
+  
+  if (!cap_.isOpened() )
+  {
+    RCLCPP_ERROR(node_->get_logger(),"Unable to open device %s.", device_path);
+    return false;
+    //throw DeviceError("device_path " + device_path + " cannot be opened");
   }
   // pub_ = it_.advertiseCamera(topic_name_, buffer_size_);
   rmw_qos_profile_t custom_qos = rmw_qos_profile_sensor_data;

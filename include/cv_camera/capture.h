@@ -5,6 +5,8 @@
 
 #include "cv_camera/exception.h"
 #include <string>
+#include <chrono>
+#include <thread>
 
 #include <rclcpp/rclcpp.hpp>
 #include <cv_bridge/cv_bridge.h>
@@ -13,6 +15,10 @@
 #include <sensor_msgs/image_encodings.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <camera_info_manager/camera_info_manager.h>
+
+
+// Custom libraries
+#include "utils/console.hpp"
 
 /**
  * @brief namespace of this package
@@ -242,6 +248,12 @@ private:
    * @brief capture_delay param value
    */
   rclcpp::Duration capture_delay_;
+
+
+  const int VIDEO_STREAM_CAM_RECOVERY_TIME = getEnv("VIDEO_STREAM_CAM_RECOVERY_TIME", 2);
+
+
+  int m_reconnection_attempts = 0;
 };
 
 } // namespace cv_camera

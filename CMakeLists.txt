@@ -26,6 +26,7 @@ find_package(image_transport REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(camera_info_manager REQUIRED)
+find_package(utils REQUIRED)
 # find_package(roslint REQUIRED)
 find_package(builtin_interfaces REQUIRED)
 # find_package(Boost REQUIRED COMPONENTS system thread)
@@ -44,7 +45,10 @@ add_library(cv_camera_driver src/capture.cpp src/driver.cpp)
 add_executable(cv_camera_node src/cv_camera_node.cpp)
 # add_dependencies(cv_camera_node cv_camera_driver)
 
-target_link_libraries(cv_camera_node cv_camera_driver)
+target_link_libraries(cv_camera_node 
+  cv_camera_driver
+  utils::utils
+  )
 
 
 set(CV_DRIVER_DEPENDENCIES
@@ -55,6 +59,7 @@ cv_bridge
 camera_info_manager
 std_msgs
 OpenCV
+utils
 
 )
 ## Specify libraries to link a library or executable target against
