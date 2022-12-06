@@ -18,7 +18,7 @@ Driver::Driver(rclcpp::Node::SharedPtr private_node, rclcpp::Node::SharedPtr cam
 {
 }
 
-void Driver::setup()
+bool Driver::setup()
 {
   double hz_pub(DEFAULT_RATE), hz_read(DEFAULT_RATE);
   int32_t device_id(0);
@@ -58,6 +58,7 @@ void Driver::setup()
     if (!camera_->setWidth(image_width))
     {
       RCLCPP_WARN(private_node_->get_logger(),"fail to set image_width");
+      return false;
     }
   }
   if (private_node_->get_parameter("image_height", image_height))
@@ -65,6 +66,7 @@ void Driver::setup()
     if (!camera_->setHeight(image_height))
     {
       RCLCPP_WARN(private_node_->get_logger(),"fail to set image_height");
+      return false;
     }
   }
 
@@ -104,6 +106,7 @@ void Driver::setup()
 #endif // CV_CAP_PROP_BUFFERSIZE
 
   rate_.reset(new rclcpp::Rate(hz_read));
+  return true;
 }
 
 void Driver::proceed()
