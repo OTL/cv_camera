@@ -17,11 +17,11 @@ Capture::Capture(rclcpp::Node::SharedPtr node, const std::string &topic_name,
       frame_id_(frame_id),
       buffer_size_(buffer_size),
       info_manager_(node_.get(), frame_id),
-      capture_delay_(rclcpp::Duration(0))
+      capture_delay_(rclcpp::Duration(0,0.0))
 {
     int dur = 0;
     node_->get_parameter_or("capture_delay",dur,dur);
-    this->capture_delay_ = rclcpp::Duration(dur);
+    this->capture_delay_ = rclcpp::Duration(dur,0.0);
 }
 
 void Capture::loadCameraInfo()
@@ -58,7 +58,7 @@ void Capture::loadCameraInfo()
     }
     if (!cap_.set(code, value))
     {
-      RCLCPP_ERROR(node_->get_logger(),"Setting with code %s and value %s failed", code, value);
+      RCLCPP_ERROR(node_->get_logger(),"Setting with code %d and value %f failed", code, value);
     }
   }
 }
@@ -155,7 +155,7 @@ bool Capture::capture()
       info_.height = bridge_.image.rows;
       info_.width = bridge_.image.cols;
     }
-    else if (info_.height != bridge_.image.rows || info_.width != bridge_.image.cols)
+    else if (info_.height != (unsigned int)bridge_.image.rows || info_.width != (unsigned int)bridge_.image.cols)
     {
       if (rescale_camera_info_)
       {
@@ -237,12 +237,12 @@ std::string Capture::det_device_path(const char* port)
       std::cout << token << std::endl;
       output_command = "udevadm info --query=path --name="+token;
       std::cout << output_command << std::endl;
-      std::string camera_device_info = execute_command(output_command);
+      std::string camera_device_info = execute_command(output_command.c_str());
       std::cout << camera_device_info << std::endl;
       if (camera_device_info.find(port) != std::string::npos)
       {
         video_device=token;
-        return video_device
+        return video_device;
       }
       
 
@@ -250,6 +250,7 @@ std::string Capture::det_device_path(const char* port)
       video_devices.erase(0, pos + delimiter.length());
   }
   // std::cout << video_devices << std::endl;
+  return video_device;
 }
 
 } // namespace cv_camera
