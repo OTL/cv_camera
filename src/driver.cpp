@@ -12,10 +12,11 @@ const int32_t PUBLISHER_BUFFER_SIZE = 1;
 namespace cv_camera
 {
 
-Driver::Driver(rclcpp::Node::SharedPtr private_node, rclcpp::Node::SharedPtr camera_node)
-    : private_node_(private_node),
-      camera_node_(camera_node)
+Driver::Driver(const rclcpp::NodeOptions& options): Node("cv_camera", options)
 {
+    this->setup();
+    // Timers
+    m_proceed_tmr = this->create_wall_timer(std::chrono::milliseconds(int(1000.0/5)), std::bind(&Driver::proceed, this));
 }
 
 bool Driver::setup()
@@ -25,27 +26,27 @@ bool Driver::setup()
   std::string device_path("");
   std::string frame_id("camera");
   std::string file_path("");
-  std::string topic_name("");
+  std::string topic_name("/video_mapping/salo_raw");
 
-  private_node_->get_parameter("device_id", device_id);
-  private_node_->get_parameter("frame_id", frame_id);
-  private_node_->get_parameter("read_rate", hz_read);
-  private_node_->get_parameter("publish_rate", hz_pub);
-  private_node_->get_parameter("topic_name", topic_name);
+  this->get_parameter("device_id", device_id);
+  this->get_parameter("frame_id", frame_id);
+  this->get_parameter("read_rate", hz_read);
+  this->get_parameter("publish_rate", hz_pub);
+  this->get_parameter("topic_name", topic_name);
 
   int32_t image_width(640);
   int32_t image_height(480);
 
-  camera_.reset(new Capture(camera_node_,
+  camera_.reset(new Capture(shared_from_this(),
                             topic_name,
                             PUBLISHER_BUFFER_SIZE,
                             frame_id));
 
-  if (private_node_->get_parameter("file", file_path) && file_path != "")
+  if (this->get_parameter("file", file_path) && file_path != "")
   {
     camera_->openFile(file_path);
   }
-  else if (private_node_->get_parameter("device_path", device_path) && device_path != "")
+  else if (this->get_parameter("device_path", device_path) && device_path != "")
   {
     camera_->open(device_path);
   }
@@ -53,19 +54,19 @@ bool Driver::setup()
   {
     camera_->open(device_id);
   }
-  if (private_node_->get_parameter("image_width", image_width))
+  if (this->get_parameter("image_width", image_width))
   {
     if (!camera_->setWidth(image_width))
     {
-      RCLCPP_WARN(private_node_->get_logger(),"fail to set image_width");
+      RCLCPP_WARN(get_logger(),"fail to set image_width");
       return false;
     }
   }
-  if (private_node_->get_parameter("image_height", image_height))
+  if (this->get_parameter("image_height", image_height))
   {
     if (!camera_->setHeight(image_height))
     {
-      RCLCPP_WARN(private_node_->get_logger(),"fail to set image_height");
+      RCLCPP_WARN(get_logger(),"fail to set image_height");
       return false;
     }
   }
@@ -89,7 +90,7 @@ bool Driver::setup()
 
   camera_->setPropertyFromParam(cv::CAP_PROP_RECTIFICATION, "cv_cap_prop_rectification");
   camera_->setPropertyFromParam(cv::CAP_PROP_ISO_SPEED, "cv_cap_prop_iso_speed");
-  publish_tmr_ = camera_node_->create_wall_timer(std::chrono::milliseconds(int(1000.0/hz_pub)), [&](){
+  publish_tmr_ = this->create_wall_timer(std::chrono::milliseconds(int(1000.0/hz_pub)), [&](){
   if (camera_->capture())
     {   
       camera_->publish();
@@ -120,3 +121,10 @@ Driver::~Driver()
 }
 
 } // namespace cv_camera
+
+#include "rclcpp_components/register_node_macro.hpp"
+
+// Register the component with class_loader.
+// This acts as a sort of entry point, allowing the component to be discoverable when its library
+// is being loaded into a running process.
+RCLCPP_COMPONENTS_REGISTER_NODE(cv_camera::Driver)

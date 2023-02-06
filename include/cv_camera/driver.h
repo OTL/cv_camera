@@ -13,21 +13,19 @@ namespace cv_camera
  *
  * This wraps getting parameters and publish in specified rate.
  */
-class Driver
+class Driver : public rclcpp::Node
 {
  public:
   /**
-   * @brief construct with ROS node handles.
-   *
-   * use private_node for getting topics like ~rate or ~device,
-   * camera_node for advertise and publishing images.
-   *
-   * @param private_node node for getting parameters.
-   * @param camera_node node for publishing.
-   */
-  Driver(rclcpp::Node::SharedPtr private_node,
-         rclcpp::Node::SharedPtr camera_node);
+  * @brief construct with ROS node handles.
+  *
+  * use private_node for getting topics like ~rate or ~device,
+  * camera_node for advertise and publishing images.
+  */
+  explicit Driver(const rclcpp::NodeOptions& options);
   ~Driver();
+
+  rclcpp::TimerBase::SharedPtr m_proceed_tmr;      /*!< @sa proceed() */
 
   /**
    * @brief Setup camera device and ROS parameters.
@@ -40,14 +38,6 @@ class Driver
    */
   void proceed();
  private:
-  /**
-   * @brief ROS private node for getting ROS parameters.
-   */
-  rclcpp::Node::SharedPtr private_node_;
-  /**
-   * @brief ROS private node for publishing images.
-   */
-  rclcpp::Node::SharedPtr camera_node_;
   /**
    * @brief ROS private timer for publishing images.
    */

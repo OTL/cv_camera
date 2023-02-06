@@ -22,6 +22,7 @@ find_package(ament_cmake REQUIRED)
 find_package(OpenCV 4 REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_components REQUIRED)
 find_package(image_transport REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(std_msgs REQUIRED)
@@ -37,7 +38,7 @@ include_directories(
   )
 
 ## Declare a cpp library
-add_library(cv_camera_driver src/capture.cpp src/driver.cpp)
+add_library(cv_camera_driver SHARED src/capture.cpp src/driver.cpp )
 
 
 ## Declare a cpp executable
@@ -49,6 +50,7 @@ target_link_libraries(cv_camera_node cv_camera_driver)
 
 set(CV_DRIVER_DEPENDENCIES
 rclcpp
+rclcpp_components
 sensor_msgs
 image_transport
 cv_bridge
@@ -61,6 +63,9 @@ OpenCV
 ament_target_dependencies(cv_camera_driver
   ${CV_DRIVER_DEPENDENCIES}
 )
+
+rclcpp_components_register_nodes(cv_camera_driver "cv_camera::Driver")
+set(node_plugins "${node_plugins}cv_camera::Driver;$<TARGET_FILE:driver>\n")
 
 ament_target_dependencies(cv_camera_node
         "rclcpp"
