@@ -27,7 +27,10 @@ bool Driver::setup()
   std::string device_path("");
   std::string frame_id("camera");
   std::string file_path("");
-  std::string topic_name("/video_mapping/salo_raw");
+  std::string topic_name("");
+  
+  this->declare_parameter("topic_name", "cam_default");
+  this->declare_parameter("device_path", "");
 
   this->get_parameter("device_id", device_id);
   this->get_parameter("frame_id", frame_id);

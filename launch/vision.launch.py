@@ -1,15 +1,77 @@
 """Launch the vision stack in a component container."""
 
-import launch
 from launch_ros.actions import LoadComposableNodes, Node
+from launch.actions import DeclareLaunchArgument, SetEnvironmentVariable
 from launch_ros.descriptions import ComposableNode
+from launch.substitutions import LaunchConfiguration
 from launch import LaunchDescription
+
+config_path = "/workspace/rover/ros2/src/vision_cpp/cv_camera/launch/camera_info.yaml"
+
+camera_names_ports = {
+    "left": "3-4.4.4:1.0",
+    "right": "3-4.4.3:1.0",
+    # "back": "1-1.5:1.0",
+    # "zoom": "1-1.6:1.0",
+}
 
 
 def generate_launch_description():
-    """Generate launch description with multiple components."""
+
+    """Declare parameters"""
+    publish_rate = LaunchConfiguration("publish_rate")
+    declare_publish_rate_cmd = DeclareLaunchArgument(
+        "publish_rate",
+        default_value="10.0",
+        description="Rate of publish images",
+    )
+    camera_info_url = LaunchConfiguration("camera_info_url")
+    declare_camera_info_url_cmd = DeclareLaunchArgument(
+        "camera_info_url",
+        default_value=config_path,
+        description="path to the camera info file",
+    )
+    read_rate = LaunchConfiguration("read_rate")
+    declare_read_rate_cmd = DeclareLaunchArgument(
+        "read_rate",
+        default_value="30.0",
+        description="Rate of read images",
+    )
+    # remappings = [
+    #     ("/left/image_raw", "/video_mapping/left"),
+    #     ("/right/image_raw", "/video_mapping/right"),
+    #     ("/back/image_raw", "/video_mapping/back"),
+    #     ("/zoom/image_raw", "/video_mapping/zoom"),
+    # ]
+
+    """Iter through available cameras"""
+    nodes = []
+    for camera_name, port in camera_names_ports.items():
+        node = ComposableNode(
+            parameters=[
+                {"device_path": port},
+                {"image_width": 640},
+                {"image_height": 360},
+                {"publish_rate": publish_rate},
+                {"read_rate": read_rate},
+                {"cv_cap_prop_fourcc": 1196444237.0},
+                {"frame_id": "camera"},
+                {"camera_info_url": camera_info_url},
+                {"topic_name": "/video_mapping/" + camera_name},
+            ],
+            package="cv_camera",
+            plugin="cv_camera::Driver",
+            namespace=camera_name,
+            # remappings=remappings,
+        )
+        nodes.append(node)
+
+    """Create the launch description"""
     return LaunchDescription(
         [
+            declare_publish_rate_cmd,
+            declare_read_rate_cmd,
+            declare_camera_info_url_cmd,
             Node(
                 name="vision_kronos",
                 package="rclcpp_components",
@@ -18,11 +80,7 @@ def generate_launch_description():
             ),
             LoadComposableNodes(
                 target_container="vision_kronos",
-                composable_node_descriptions=[
-                    ComposableNode(
-                        package="cv_camera", plugin="cv_camera::Driver", name="driver"
-                    ),
-                ],
+                composable_node_descriptions=[*nodes],
             ),
         ]
     )

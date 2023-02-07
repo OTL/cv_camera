@@ -103,7 +103,6 @@ void Capture::open(const std::string &device_path)
 {
   std::string device = det_device_path(device_path.c_str());
   
-  std::cout << device << std::endl;
   cap_.open(device, cv::CAP_V4L2);
   if (!cap_.isOpened())
   {
@@ -218,8 +217,6 @@ std::string Capture::execute_command(const char* command)
   while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
       result += buffer.data();
   }
-  // Debug print
-  std::cout << result << std::endl;
 
   return result;
 }
@@ -234,11 +231,8 @@ std::string Capture::det_device_path(const char* port)
   std::string output_command;
   while ((pos = video_devices.find(delimiter)) != std::string::npos) {
       token = video_devices.substr(0, pos);
-      std::cout << token << std::endl;
       output_command = "udevadm info --query=path --name="+token;
-      std::cout << output_command << std::endl;
       std::string camera_device_info = execute_command(output_command.c_str());
-      std::cout << camera_device_info << std::endl;
       if (camera_device_info.find(port) != std::string::npos)
       {
         video_device=token;
@@ -249,7 +243,6 @@ std::string Capture::det_device_path(const char* port)
       
       video_devices.erase(0, pos + delimiter.length());
   }
-  // std::cout << video_devices << std::endl;
   return video_device;
 }
 
