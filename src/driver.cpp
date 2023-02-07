@@ -16,8 +16,6 @@ Driver::Driver(const rclcpp::NodeOptions& options): Node("cv_camera", options)
 {
     auto ptr = std::shared_ptr<Driver>( this, [](Driver*){} );
     this->setup();
-    // Timers
-    m_proceed_tmr = this->create_wall_timer(std::chrono::milliseconds(int(1000.0/5)), std::bind(&Driver::proceed, this));
 }
 
 bool Driver::setup()
@@ -39,6 +37,9 @@ bool Driver::setup()
 
   int32_t image_width(640);
   int32_t image_height(480);
+
+  // Timers
+  m_proceed_tmr = this->create_wall_timer(std::chrono::milliseconds(int(hz_pub)), std::bind(&Driver::proceed, this));
 
   camera_.reset(new Capture(shared_from_this(),
                             topic_name,
