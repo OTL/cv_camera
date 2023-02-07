@@ -14,6 +14,7 @@ namespace cv_camera
 
 Driver::Driver(const rclcpp::NodeOptions& options): Node("cv_camera", options)
 {
+    auto ptr = std::shared_ptr<Driver>( this, [](Driver*){} );
     this->setup();
     // Timers
     m_proceed_tmr = this->create_wall_timer(std::chrono::milliseconds(int(1000.0/5)), std::bind(&Driver::proceed, this));
@@ -21,6 +22,8 @@ Driver::Driver(const rclcpp::NodeOptions& options): Node("cv_camera", options)
 
 bool Driver::setup()
 {
+  RCLCPP_WARN(get_logger(),"Setting up the driver");
+
   double hz_pub(DEFAULT_RATE), hz_read(DEFAULT_RATE);
   int32_t device_id(0);
   std::string device_path("");
