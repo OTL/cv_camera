@@ -113,6 +113,8 @@ void Capture::open(const std::string &device_path)
   custom_qos.depth = buffer_size_;
   pub_ = image_transport::create_camera_publisher(node_.get(), topic_name_, custom_qos);
 
+  cap_.set(cv::CAP_PROP_FOURCC, cv::VideoWriter::fourcc('M','J','P','G'));
+
   loadCameraInfo();
 }
 
@@ -142,6 +144,11 @@ bool Capture::capture()
 {
   if (cap_.retrieve(bridge_.image))
   {
+    // TODO: DEBUG show images
+    // cv::namedWindow("Imageshow" + topic_name_, cv::WINDOW_AUTOSIZE);
+    // cv::imshow("Imageshow"+topic_name_, bridge_.image);
+    // cv::waitKey(1);
+
     rclcpp::Clock system_clock(RCL_SYSTEM_TIME);
     rclcpp::Time stamp = system_clock.now() - capture_delay_;
     bridge_.encoding = enc::BGR8;

@@ -29,20 +29,28 @@ bool Driver::setup()
   std::string file_path("");
   std::string topic_name("");
   
-  this->declare_parameter("topic_name", "cam_default");
+  this->declare_parameter("publish_rate", 10.0);
+  this->declare_parameter("read_rate", 30.0);
+  this->declare_parameter("device_id", 0);
   this->declare_parameter("device_path", "");
+  this->declare_parameter("frame_id", "camera");
+  this->declare_parameter("file_path", "");
+  this->declare_parameter("topic_name", "cam_default");
+  this->declare_parameter("cv_cap_prop_fourcc", 1196444237.0);
 
-  this->get_parameter("device_id", device_id);
-  this->get_parameter("frame_id", frame_id);
-  this->get_parameter("read_rate", hz_read);
   this->get_parameter("publish_rate", hz_pub);
+  this->get_parameter("read_rate", hz_read);
+  this->get_parameter("device_id", device_id);
+  this->get_parameter("device_path", device_path);
+  this->get_parameter("frame_id", frame_id);
+  this->get_parameter("file_path", file_path);
   this->get_parameter("topic_name", topic_name);
 
   int32_t image_width(640);
   int32_t image_height(480);
 
   // Timers
-  m_proceed_tmr = this->create_wall_timer(std::chrono::milliseconds(int(hz_pub)), std::bind(&Driver::proceed, this));
+  m_proceed_tmr = this->create_wall_timer(std::chrono::milliseconds(int(1000.0/hz_read)), std::bind(&Driver::proceed, this));
 
   camera_.reset(new Capture(shared_from_this(),
                             topic_name,

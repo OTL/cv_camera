@@ -8,11 +8,11 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <cv_bridge/cv_bridge.h>
-#include <image_transport/image_transport.h>
+#include <image_transport/image_transport.hpp>
 #include <sensor_msgs/msg/camera_info.hpp>
 #include <sensor_msgs/image_encodings.hpp>
 #include <opencv2/highgui/highgui.hpp>
-#include <camera_info_manager/camera_info_manager.h>
+#include <camera_info_manager/camera_info_manager.hpp>
 
 /**
  * @brief namespace of this package
