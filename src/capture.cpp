@@ -113,8 +113,6 @@ void Capture::open(const std::string &device_path)
   custom_qos.depth = buffer_size_;
   pub_ = image_transport::create_camera_publisher(node_.get(), topic_name_, custom_qos);
 
-  cap_.set(cv::CAP_PROP_FOURCC, cv::VideoWriter::fourcc('M','J','P','G'));
-
   loadCameraInfo();
 }
 

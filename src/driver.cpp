@@ -36,14 +36,12 @@ bool Driver::setup()
   this->declare_parameter("frame_id", "camera");
   this->declare_parameter("file_path", "");
   this->declare_parameter("topic_name", "cam_default");
-  this->declare_parameter("cv_cap_prop_fourcc", 1196444237.0);
+  this->declare_parameter("cv_cap_prop_fourcc", (double)cv::VideoWriter::fourcc('M','J','P','G'));
 
   this->get_parameter("publish_rate", hz_pub);
   this->get_parameter("read_rate", hz_read);
   this->get_parameter("device_id", device_id);
-  this->get_parameter("device_path", device_path);
   this->get_parameter("frame_id", frame_id);
-  this->get_parameter("file_path", file_path);
   this->get_parameter("topic_name", topic_name);
 
   int32_t image_width(640);
