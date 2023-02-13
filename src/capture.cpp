@@ -234,10 +234,14 @@ std::string Capture::det_device_path(const char* port)
   size_t pos = 0;
   std::string token;
   std::string output_command;
-  while ((pos = video_devices.find(delimiter)) != std::string::npos) {
+  while ((pos = video_devices.find(delimiter)) != std::string::npos) 
+  {
       token = video_devices.substr(0, pos);
+      std::cout << "token: " <<token << std::endl;
       output_command = "udevadm info --query=path --name="+token;
+      std::cout <<"output_command: " << output_command << std::endl;
       std::string camera_device_info = execute_command(output_command.c_str());
+      std::cout << "camera_device_info: " << camera_device_info << std::endl;
       if (camera_device_info.find(port) != std::string::npos)
       {
         video_device=token;
