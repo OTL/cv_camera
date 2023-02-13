@@ -99,14 +99,14 @@ void Capture::open(int32_t device_id)
   loadCameraInfo();
 }
 
-void Capture::open(const std::string &device_path)
+void Capture::open(const std::string &port)
 {
-  std::string device = det_device_path(device_path.c_str());
+  std::string device = det_device_path(port.c_str());
   
   cap_.open(device, cv::CAP_V4L2);
   if (!cap_.isOpened())
   {
-    throw DeviceError("device_path " + device_path + " cannot be opened");
+    throw DeviceError("port " + port + " cannot be opened");
   }
   // pub_ = it_.advertiseCamera(topic_name_, buffer_size_);
   rmw_qos_profile_t custom_qos = rmw_qos_profile_sensor_data;

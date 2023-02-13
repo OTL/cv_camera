@@ -20,11 +20,10 @@ Driver::Driver(const rclcpp::NodeOptions& options): Node("cv_camera", options)
 
 bool Driver::setup()
 {
-  RCLCPP_WARN(get_logger(),"Setting up the driver");
 
   double hz_pub(DEFAULT_RATE), hz_read(DEFAULT_RATE);
   int32_t device_id(0);
-  std::string device_path("");
+  std::string port("");
   std::string frame_id("camera");
   std::string file_path("");
   std::string topic_name("");
@@ -32,10 +31,10 @@ bool Driver::setup()
   this->declare_parameter("publish_rate", 10.0);
   this->declare_parameter("read_rate", 30.0);
   this->declare_parameter("device_id", 0);
-  this->declare_parameter("device_path", "");
+  this->declare_parameter("port", "");
   this->declare_parameter("frame_id", "camera");
   this->declare_parameter("file_path", "");
-  this->declare_parameter("topic_name", "cam_default");
+  this->declare_parameter("topic_name", "/video_mapping/test");
   this->declare_parameter("cv_cap_prop_fourcc", (double)cv::VideoWriter::fourcc('M','J','P','G'));
 
   this->get_parameter("publish_rate", hz_pub);
@@ -59,9 +58,9 @@ bool Driver::setup()
   {
     camera_->openFile(file_path);
   }
-  else if (this->get_parameter("device_path", device_path) && device_path != "")
+  else if (this->get_parameter("port", port) && port != "")
   {
-    camera_->open(device_path);
+    camera_->open(port);
   }
   else
   {

@@ -52,10 +52,10 @@ public:
   /**
    * @brief Open capture device with device name.
    *
-   * @param device_path path of the camera device
+   * @param port path of the camera device
    * @throw cv_camera::DeviceError device open failed
    */
-  void open(const std::string &device_path);
+  void open(const std::string &port);
 
 
   /**
@@ -70,7 +70,7 @@ public:
    * @brief Finds the equivalent camera device associated to 
    *        one port.
    * @param port Port number of interest
-   * @return device_path::DeviceError device open failed
+   * @return port::DeviceError device open failed
    */
   std::string det_device_path(const char* port);
 
