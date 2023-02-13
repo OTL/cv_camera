@@ -2,7 +2,7 @@
   ros__parameters:
     cv_cap_prop_fourcc: 1196444237.0
     device_id: 0
-    port: 3-4.1:1.0
+    port: 3-4.4.2:1.0
     file_path: ''
     frame_id: camera
     publish_rate: 10.0

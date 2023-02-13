@@ -102,7 +102,7 @@ void Capture::open(int32_t device_id)
 void Capture::open(const std::string &port)
 {
   std::string device = det_device_path(port.c_str());
-  
+
   cap_.open(device, cv::CAP_V4L2);
   if (!cap_.isOpened())
   {
@@ -237,6 +237,7 @@ std::string Capture::det_device_path(const char* port)
   while ((pos = video_devices.find(delimiter)) != std::string::npos) 
   {
       token = video_devices.substr(0, pos);
+      std::cout << "port: " << port << std::endl;
       std::cout << "token: " <<token << std::endl;
       output_command = "udevadm info --query=path --name="+token;
       std::cout <<"output_command: " << output_command << std::endl;
@@ -245,6 +246,7 @@ std::string Capture::det_device_path(const char* port)
       if (camera_device_info.find(port) != std::string::npos)
       {
         video_device=token;
+        std::cout << "final assigned: " << video_device << std::endl;
         return video_device;
       }
       
