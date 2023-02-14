@@ -18,7 +18,7 @@ camera_names_ports = ["left", "right", "back", "zoom"]
 def generate_launch_description():
 
     config = os.path.join(
-        get_package_share_directory("cv_camera"), "launch", "cv_camera_params.yaml"
+        get_package_share_directory("cv_camera"), "launch", "usb_camera_params.yaml"
     )
 
     """Iter through available cameras"""
