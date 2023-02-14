@@ -5,8 +5,9 @@
     publish_rate: 10.0
     read_rate: 30.0
     flip: 0
-    width: 640
-    height: 360
+    width: 640.0
+    height: 360.0
+    fourcc: 1196444237.0
     topic_name: /video_mapping/zoom
     cam_info_topic: None
     topic_sim: "/gazebo/streaming_cam_zoom/image_raw"
@@ -19,7 +20,6 @@
     qr_scan: False
     data_capture_csv: True
     data_capture_video: False
-    cv_cap_prop_fourcc: 1196444237.0
     # device_id: 0
     # file_path: ''
     # frame_id: camera
@@ -39,8 +39,9 @@
     publish_rate: 10.0
     read_rate: 30.0
     flip: 0
-    width: 640
-    height: 360
+    width: 640.0
+    height: 360.0
+    fourcc: 1196444237.0
     topic_name: /video_mapping/left
     cam_info_topic: None
     topic_sim: "/gazebo/streaming_cam_left/image_raw"
@@ -53,7 +54,6 @@
     qr_scan: False
     data_capture_csv: True
     data_capture_video: False
-    cv_cap_prop_fourcc: 1196444237.0
     # device_id: 0
     # file_path: ''
     # frame_id: camera
@@ -73,8 +73,9 @@
     publish_rate: 10.0
     read_rate: 30.0
     flip: 0
-    width: 640
-    height: 360
+    width: 640.0
+    height: 360.0
+    fourcc: 1196444237.0
     topic_name: /video_mapping/right
     cam_info_topic: None
     topic_sim: "/gazebo/streaming_cam_right/image_raw"
@@ -87,7 +88,6 @@
     qr_scan: False
     data_capture_csv: True
     data_capture_video: False
-    cv_cap_prop_fourcc: 1196444237.0
     # device_id: 0
     # file_path: ''
     # frame_id: camera
@@ -107,8 +107,9 @@
     publish_rate: 10.0
     read_rate: 30.0
     flip: 0
-    width: 640
-    height: 360
+    width: 640.0
+    height: 360.0
+    fourcc: 1196444237.0
     topic_name: /video_mapping/back
     cam_info_topic: None
     topic_sim: "/gazebo/streaming_cam_back/image_raw"
@@ -121,7 +122,6 @@
     qr_scan: False
     data_capture_csv: True
     data_capture_video: False
-    cv_cap_prop_fourcc: 1196444237.0
     # device_id: 0
     # file_path: ''
     # frame_id: camera

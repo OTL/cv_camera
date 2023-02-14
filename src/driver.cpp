@@ -25,23 +25,38 @@ bool Driver::setup()
     std::string file_path("");
     std::string topic_name("");
 
+    // Declare Custom Parameters
+    this->declare_parameter("port", "");
+    this->declare_parameter("name", "cam_name");
     this->declare_parameter("publish_rate", 10.0);
     this->declare_parameter("read_rate", 30.0);
-    this->declare_parameter("device_id", 0);
-    this->declare_parameter("port", "");
-    this->declare_parameter("frame_id", "camera");
-    this->declare_parameter("file_path", "");
+    this->declare_parameter("flip", 0);
     this->declare_parameter("topic_name", "/video_mapping/test");
-    this->declare_parameter("cv_cap_prop_fourcc", (double)cv::VideoWriter::fourcc('M', 'J', 'P', 'G'));
+    this->declare_parameter("cam_info_topic", "None");
+    this->declare_parameter("topic_sim", "/gazebo/streaming_cam_test/image_raw");
+    this->declare_parameter("cam_info_period", 5);
+    this->declare_parameter("intrinsic", false);
+    this->declare_parameter("video_path", "None");
+    this->declare_parameter("object_detection", false);
+    this->declare_parameter("semantic_segmentation", false);
+    this->declare_parameter("qr_scan", false);
+    this->declare_parameter("data_capture_csv", false);
+    this->declare_parameter("data_capture_video", false);
+    // this->declare_parameter("device_id", 0);
+    // this->declare_parameter("file_path", "");
+    // this->declare_parameter("frame_id", "camera");
 
+    // Declare CV2 parameters
+    this->declare_parameter("width", 640.0);
+    this->declare_parameter("height", 360.0);
+    this->declare_parameter("fourcc", (double)cv::VideoWriter::fourcc('M', 'J', 'P', 'G'));
+
+    // Get Custom Parameters
     this->get_parameter("publish_rate", hz_pub);
     this->get_parameter("read_rate", hz_read);
-    this->get_parameter("device_id", device_id);
-    this->get_parameter("frame_id", frame_id);
+    // this->get_parameter("device_id", device_id);
+    // this->get_parameter("frame_id", frame_id);
     this->get_parameter("topic_name", topic_name);
-
-    int32_t image_width(640);
-    int32_t image_height(480);
 
     // Timers
     m_proceed_tmr =
@@ -61,29 +76,13 @@ bool Driver::setup()
     {
         camera_->open(device_id);
     }
-    if (this->get_parameter("image_width", image_width))
-    {
-        if (!camera_->setWidth(image_width))
-        {
-            RCLCPP_WARN(get_logger(), "fail to set image_width");
-            return false;
-        }
-    }
-    if (this->get_parameter("image_height", image_height))
-    {
-        if (!camera_->setHeight(image_height))
-        {
-            RCLCPP_WARN(get_logger(), "fail to set image_height");
-            return false;
-        }
-    }
 
     camera_->setPropertyFromParam(cv::CAP_PROP_POS_MSEC, "cv_cap_prop_pos_msec");
     camera_->setPropertyFromParam(cv::CAP_PROP_POS_AVI_RATIO, "cv_cap_prop_pos_avi_ratio");
-    camera_->setPropertyFromParam(cv::CAP_PROP_FRAME_WIDTH, "cv_cap_prop_frame_width");
-    camera_->setPropertyFromParam(cv::CAP_PROP_FRAME_HEIGHT, "cv_cap_prop_frame_height");
+    camera_->setPropertyFromParam(cv::CAP_PROP_FRAME_WIDTH, "width");
+    camera_->setPropertyFromParam(cv::CAP_PROP_FRAME_HEIGHT, "height");
     camera_->setPropertyFromParam(cv::CAP_PROP_FPS, "cv_cap_prop_fps");
-    camera_->setPropertyFromParam(cv::CAP_PROP_FOURCC, "cv_cap_prop_fourcc");
+    camera_->setPropertyFromParam(cv::CAP_PROP_FOURCC, "fourcc");
     camera_->setPropertyFromParam(cv::CAP_PROP_FRAME_COUNT, "cv_cap_prop_frame_count");
     camera_->setPropertyFromParam(cv::CAP_PROP_FORMAT, "cv_cap_prop_format");
     camera_->setPropertyFromParam(cv::CAP_PROP_MODE, "cv_cap_prop_mode");
@@ -94,7 +93,6 @@ bool Driver::setup()
     camera_->setPropertyFromParam(cv::CAP_PROP_GAIN, "cv_cap_prop_gain");
     camera_->setPropertyFromParam(cv::CAP_PROP_EXPOSURE, "cv_cap_prop_exposure");
     camera_->setPropertyFromParam(cv::CAP_PROP_CONVERT_RGB, "cv_cap_prop_convert_rgb");
-
     camera_->setPropertyFromParam(cv::CAP_PROP_RECTIFICATION, "cv_cap_prop_rectification");
     camera_->setPropertyFromParam(cv::CAP_PROP_ISO_SPEED, "cv_cap_prop_iso_speed");
     publish_tmr_ = this->create_wall_timer(std::chrono::milliseconds(int(1000.0 / hz_pub)), [&]() {
