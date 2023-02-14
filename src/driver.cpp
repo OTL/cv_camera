@@ -70,7 +70,10 @@ bool Driver::setup()
     }
     else if (this->get_parameter("port", port) && port != "")
     {
-        camera_->open(port);
+        if(!camera_->open(port)) 
+        {
+            return false;
+        }
     }
     else
     {

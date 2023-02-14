@@ -52,7 +52,7 @@ class Capture
      * @param port path of the camera device
      * @throw cv_camera::DeviceError device open failed
      */
-    void open(const std::string& port);
+    bool open(const std::string& port);
 
     /**
      * @brief Finds the equivalent camera device associated to

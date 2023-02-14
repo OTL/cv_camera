@@ -98,9 +98,19 @@ void Capture::open(int32_t device_id)
     loadCameraInfo();
 }
 
-void Capture::open(const std::string& port)
+bool Capture::open(const std::string& port)
 {
     std::string device = det_device_path(port.c_str());
+
+    if (device.empty())
+    {
+        std::cout << "Camera Not found " << device << std::endl;
+        return false;
+    }
+    else
+    {
+        std::cout << "The device is located in " << device << std::endl;
+    }
 
     cap_.open(device, cv::CAP_V4L2);
     if (!cap_.isOpened())
@@ -113,6 +123,7 @@ void Capture::open(const std::string& port)
     pub_ = image_transport::create_camera_publisher(node_.get(), topic_name_, custom_qos);
 
     loadCameraInfo();
+    return true;
 }
 
 void Capture::open() { open(0); }
