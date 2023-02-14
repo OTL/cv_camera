@@ -6,8 +6,7 @@
 #include <stdexcept>
 #include <string>
 
-namespace cv_camera
-{
+namespace cv_camera {
 
 /**
  * @brief ROS cv camera device exception.
@@ -15,9 +14,8 @@ namespace cv_camera
  */
 class DeviceError : public std::runtime_error
 {
- public:
-  explicit DeviceError(const std::string &cause):
-      std::runtime_error(cause) {}
+   public:
+    explicit DeviceError(const std::string& cause) : std::runtime_error(cause) {}
 };
 
 }  // end namespace cv_camera
