@@ -104,7 +104,7 @@ bool Capture::open(const std::string& port)
 
     if (device.empty())
     {
-        std::cout << "Camera Not found " << device << std::endl;
+        std::cout << "Camera Not found in port " << port << std::endl;
         return false;
     }
     else
@@ -113,9 +113,22 @@ bool Capture::open(const std::string& port)
     }
 
     cap_.open(device, cv::CAP_V4L2);
-    if (!cap_.isOpened())
+
+    std::chrono::milliseconds video_recovery_time(VIDEO_STREAM_CAM_RECOVERY_TIME*1000); // or whatever
+
+    while (!cap_.isOpened() && m_reconnection_attempts < 10)
     {
-        throw DeviceError("port " + port + " cannot be opened");
+        m_reconnection_attempts +=1;
+        RCLCPP_ERROR(node_->get_logger(),"Error while opening %s. Retrying %d/10 ", port.c_str(), m_reconnection_attempts);
+        cap_.open(device, cv::CAP_V4L2);
+        std::this_thread::sleep_for(video_recovery_time);
+    }
+
+    if (!cap_.isOpened() )
+    {
+        RCLCPP_ERROR(node_->get_logger(),"Unable to open device %s.", port.c_str());
+        return false;
+        //throw DeviceError("device_path " + device_path + " cannot be opened");
     }
     // pub_ = it_.advertiseCamera(topic_name_, buffer_size_);
     rmw_qos_profile_t custom_qos = rmw_qos_profile_sensor_data;
@@ -246,15 +259,13 @@ std::string Capture::det_device_path(const char* port)
     {
         token = video_devices.substr(0, pos);
         std::cout << "port: " << port << std::endl;
-        std::cout << "token: " << token << std::endl;
         output_command = "udevadm info --query=path --name=" + token;
         std::cout << "output_command: " << output_command << std::endl;
         std::string camera_device_info = execute_command(output_command.c_str());
-        std::cout << "camera_device_info: " << camera_device_info << std::endl;
+        std::cout << "cam_device_info: " << camera_device_info << std::endl;
         if (camera_device_info.find(port) != std::string::npos)
         {
             video_device = token;
-            std::cout << "final assigned: " << video_device << std::endl;
             return video_device;
         }
 

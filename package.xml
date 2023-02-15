@@ -23,6 +23,7 @@
   <exec_depend>cv_bridge</exec_depend>
   <build_depend>camera_info_manager</build_depend>
   <exec_depend>camera_info_manager</exec_depend>
+  <!-- <depend>utils</depend> -->
 
   <export>
     <build_type>ament_cmake</build_type>
