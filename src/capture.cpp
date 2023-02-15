@@ -100,7 +100,7 @@ void Capture::open(int32_t device_id)
 
 bool Capture::open(const std::string& port)
 {
-    std::string device = det_device_path(port.c_str());
+    std::string device = "/dev/video" + det_device_path(port.c_str());
 
     if (device.empty())
     {
@@ -249,27 +249,43 @@ std::string Capture::execute_command(const char* command)
 std::string Capture::det_device_path(const char* port)
 {
     std::string video_device;
+    //TODO: instead of reading the output from shell, iter the directory
     std::string video_devices = execute_command("ls /dev/video*");
     std::string delimiter = "\n";
 
     size_t pos = 0;
+    std::string pre_token;
     std::string token;
     std::string output_command;
+    std::vector<int>devices;
+
     while ((pos = video_devices.find(delimiter)) != std::string::npos)
+    {   
+        // get /dev/videoX substring
+        pre_token = video_devices.substr(0, pos);
+
+        // get number of the device
+        token = pre_token.substr(10,2);
+
+        devices.push_back(std::stoi(token));
+
+        video_devices.erase(0, pos + delimiter.length());
+    }
+
+    // Sort the vector to get devices in order
+	std::sort(devices.begin(),devices.end());
+
+    // Iter the devices to identify which port correspond to which videoX
+    for(const auto& cam : devices)
     {
-        token = video_devices.substr(0, pos);
-        std::cout << "port: " << port << std::endl;
-        output_command = "udevadm info --query=path --name=" + token;
-        std::cout << "output_command: " << output_command << std::endl;
+        output_command = "udevadm info --query=path --name=/dev/video" + std::to_string(cam);
         std::string camera_device_info = execute_command(output_command.c_str());
-        std::cout << "cam_device_info: " << camera_device_info << std::endl;
         if (camera_device_info.find(port) != std::string::npos)
         {
-            video_device = token;
+            video_device = std::to_string(cam);
             return video_device;
         }
 
-        video_devices.erase(0, pos + delimiter.length());
     }
     return video_device;
 }
