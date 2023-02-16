@@ -21,29 +21,6 @@ def generate_launch_description():
         get_package_share_directory("cv_camera"), "launch", "usb_camera_params.yaml"
     )
 
-    """Iter through available cameras"""
-    nodes = []
-    if True:
-        for camera_name in camera_names_ports:
-            node = ComposableNode(
-                parameters=[config],
-                package="cv_camera",
-                plugin="cv_camera::Driver",
-                namespace=camera_name,
-                name=f"cv_camera_{camera_name}",
-            )
-            nodes.append(node)
-    else:
-        for camera_name in camera_names_ports:
-            node = Node(
-                parameters=[config],
-                package="cv_camera",
-                executable="cv_camera_node",
-                name=f"cv_camera_{camera_name}",
-                output="screen",
-                namespace=camera_name,
-            )
-            nodes.append(node)
     return LaunchDescription(
         [
             # -------------- COMPOSITION -------------------------------
@@ -63,14 +40,33 @@ def generate_launch_description():
                     ),
                     LoadComposableNodes(
                         target_container="vision_kronos",
-                        composable_node_descriptions=[*nodes],
+                        composable_node_descriptions=[
+                            ComposableNode(
+                                parameters=[config],
+                                package="cv_camera",
+                                plugin="cv_camera::Driver",
+                                namespace=camera_name,
+                                name=f"cv_camera_{camera_name}",
+                            )
+                            for camera_name in camera_names_ports
+                        ],
                     ),
                 ],
             ),
             # -------------- NO COMPOSITION ----------------------------
-            # GroupAction(
-            #     condition=UnlessCondition(LaunchConfiguration("use_composition")),
-            #     actions=[*nodes],
-            # ),
+            GroupAction(
+                condition=UnlessCondition(LaunchConfiguration("use_composition")),
+                actions=[
+                    Node(
+                        parameters=[config],
+                        package="cv_camera",
+                        executable="cv_camera_node",
+                        name=f"cv_camera_{camera_name}",
+                        output="screen",
+                        namespace=camera_name,
+                    )
+                    for camera_name in camera_names_ports
+                ],
+            ),
         ]
     )

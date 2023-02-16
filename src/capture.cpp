@@ -99,8 +99,16 @@ void Capture::open(int32_t device_id)
 }
 
 bool Capture::open(const std::string& port)
-{
-    std::string device = "/dev/video" + det_device_path(port.c_str());
+{   
+    std::string device;
+
+    if (det_device_path(port.c_str()).compare("-1") != 0)
+    {
+        device = "/dev/video" + det_device_path(port.c_str());
+    }
+    else{
+        std::cout << "Device couldnt be determined in port " << port << std::endl;
+    }
 
     if (device.empty())
     {
@@ -109,7 +117,7 @@ bool Capture::open(const std::string& port)
     }
     else
     {
-        std::cout << "The device is located in " << device << std::endl;
+        std::cout << "The port "<< port << " is located in " << device << std::endl;
     }
 
     cap_.open(device, cv::CAP_V4L2);
@@ -214,7 +222,7 @@ bool Capture::setPropertyFromParam(int property_id, const std::string& param_nam
         double value = 0.0;
         if (node_->get_parameter(param_name, value))
         {
-            RCLCPP_INFO(node_->get_logger(), "setting property %s = %lf", param_name.c_str(), value);
+            // RCLCPP_INFO(node_->get_logger(), "setting property %s = %lf", param_name.c_str(), value);
             return cap_.set(property_id, value);
         }
     }
@@ -248,7 +256,7 @@ std::string Capture::execute_command(const char* command)
 }
 std::string Capture::det_device_path(const char* port)
 {
-    std::string video_device;
+    std::string video_device = "-1";
     //TODO: instead of reading the output from shell, iter the directory
     std::string video_devices = execute_command("ls /dev/video*");
     std::string delimiter = "\n";
@@ -263,10 +271,8 @@ std::string Capture::det_device_path(const char* port)
     {   
         // get /dev/videoX substring
         pre_token = video_devices.substr(0, pos);
-
-        // get number of the device
+        // get number of the cam device
         token = pre_token.substr(10,2);
-
         devices.push_back(std::stoi(token));
 
         video_devices.erase(0, pos + delimiter.length());
@@ -285,8 +291,8 @@ std::string Capture::det_device_path(const char* port)
             video_device = std::to_string(cam);
             return video_device;
         }
-
     }
+
     return video_device;
 }
 
