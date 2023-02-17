@@ -17,7 +17,7 @@
 #include <sensor_msgs/msg/camera_info.hpp>
 
 // Custom libraries
-// #include "utils/console.hpp"
+#include "utils/console.hpp"
 
 /**
  * @brief namespace of this package
@@ -229,7 +229,7 @@ class Capture
      */
     rclcpp::Duration capture_delay_;
 
-    const int VIDEO_STREAM_CAM_RECOVERY_TIME = 2;//getEnv("VIDEO_STREAM_CAM_RECOVERY_TIME", 2);
+    const int VIDEO_STREAM_CAM_RECOVERY_TIME = getEnv("VIDEO_STREAM_CAM_RECOVERY_TIME", 2);
 
     int m_reconnection_attempts = 0;
 };

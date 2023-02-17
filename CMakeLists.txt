@@ -27,11 +27,10 @@ find_package(image_transport REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(camera_info_manager REQUIRED)
-# find_package(utils)
-# find_package(roslint REQUIRED)
+find_package(utils)
 find_package(builtin_interfaces REQUIRED)
-# find_package(Boost REQUIRED COMPONENTS system thread)
-# roslint_cpp()
+
+set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS_INIT} -fPIC")
 
 include_directories(
   include
@@ -48,7 +47,7 @@ add_executable(cv_camera_node src/cv_camera_node.cpp)
 
 target_link_libraries(cv_camera_node 
   cv_camera_driver
-  # utils::utils
+  utils::utils
   )
 
 
@@ -61,7 +60,7 @@ cv_bridge
 camera_info_manager
 std_msgs
 OpenCV
-# utils
+utils
 
 )
 ## Specify libraries to link a library or executable target against
