@@ -1,6 +1,6 @@
 // Copyright [2015] Takashi Ogura<t.ogura@gmail.com>
 
-#include "cv_camera/capture.h"
+#include "cv_camera/capture.hpp"
 #include <sstream>
 #include <string>
 
@@ -170,7 +170,17 @@ bool Capture::capture()
 {
     if (cap_.retrieve(bridge_.image))
     {
-        // TODO: DEBUG show images
+        // DEBUG show images
+        // cv::namedWindow("Imageshow" + topic_name_, cv::WINDOW_AUTOSIZE);
+        // cv::imshow("Imageshow"+topic_name_, bridge_.image);
+        // cv::waitKey(1);
+
+        // Get the PID
+        std::string ss;
+        ss = "pid_orignal: " + std::to_string(getpid());
+        cv::putText(bridge_.image, ss.c_str(), cv::Point(80, 50), cv::FONT_HERSHEY_DUPLEX, 1, cv::Scalar(255, 0, 0), 2, false);
+
+        // // DEBUG show images
         // cv::namedWindow("Imageshow" + topic_name_, cv::WINDOW_AUTOSIZE);
         // cv::imshow("Imageshow"+topic_name_, bridge_.image);
         // cv::waitKey(1);

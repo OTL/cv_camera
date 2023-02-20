@@ -3,7 +3,7 @@
 #ifndef CV_CAMERA_DRIVER_H
 #define CV_CAMERA_DRIVER_H
 
-#include "cv_camera/capture.h"
+#include "cv_camera/capture.hpp"
 
 namespace cv_camera {
 
