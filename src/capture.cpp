@@ -170,15 +170,12 @@ bool Capture::capture()
 {
     if (cap_.retrieve(bridge_.image))
     {
-        // DEBUG show images
-        // cv::namedWindow("Imageshow" + topic_name_, cv::WINDOW_AUTOSIZE);
-        // cv::imshow("Imageshow"+topic_name_, bridge_.image);
-        // cv::waitKey(1);
 
-        // Get the PID
-        std::string ss;
-        ss = "pid_orignal: " + std::to_string(getpid());
-        cv::putText(bridge_.image, ss.c_str(), cv::Point(80, 50), cv::FONT_HERSHEY_DUPLEX, 1, cv::Scalar(255, 0, 0), 2, false);
+        // DEBUG Get the PID
+        sensor_msgs::msg::Image::UniquePtr msg(new sensor_msgs::msg::Image());
+        std::stringstream ss;
+        ss << "pid_origi: " << std::to_string(getpid()) << ", ptr: " << msg.get();
+        cv::putText(bridge_.image, ss.str(), cv::Point(80, 50), cv::FONT_HERSHEY_DUPLEX, 0.8, cv::Scalar(0, 0, 255), 1.5, false);
 
         // // DEBUG show images
         // cv::namedWindow("Imageshow" + topic_name_, cv::WINDOW_AUTOSIZE);
