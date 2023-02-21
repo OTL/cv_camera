@@ -172,9 +172,8 @@ bool Capture::capture()
     {
 
         // DEBUG Get the PID
-        sensor_msgs::msg::Image::UniquePtr msg(new sensor_msgs::msg::Image());
         std::stringstream ss;
-        ss << "pid_origi: " << std::to_string(getpid()) << ", ptr: " << msg.get();
+        ss << "pid_origi: " << std::to_string(getpid()) << ", ptr: " << &bridge_;
         cv::putText(bridge_.image, ss.str(), cv::Point(80, 50), cv::FONT_HERSHEY_DUPLEX, 0.8, cv::Scalar(0, 0, 255), 1.5, false);
 
         // // DEBUG show images
