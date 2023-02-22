@@ -3,10 +3,11 @@
 #ifndef CV_CAMERA_CAPTURE_H
 #define CV_CAMERA_CAPTURE_H
 
-#include <string>
-#include "cv_camera/exception.h"
 #include <chrono>
+#include <string>
 #include <thread>
+#include "cv_camera/exception.h"
+#include "cv_camera/utils.hpp"
 
 #include <cv_bridge/cv_bridge.h>
 #include <camera_info_manager/camera_info_manager.hpp>
@@ -222,6 +223,11 @@ class Capture
      * @brief camera info manager
      */
     camera_info_manager::CameraInfoManager info_manager_;
+
+    /**
+     * @brief Final publisher for image messages
+     */
+    rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr m_pub_image_ptr;
 
     /**
      * @brief rescale_camera_info param value

@@ -19,6 +19,7 @@ Capture::Capture(rclcpp::Node::SharedPtr node, const std::string& topic_name, ui
     , capture_delay_(rclcpp::Duration(0, 0.0))
 {
     int dur = 0;
+    m_pub_image_ptr = node->create_publisher<sensor_msgs::msg::Image>(topic_name, 1);
     node_->get_parameter_or("capture_delay", dur, dur);
     this->capture_delay_ = rclcpp::Duration(dur, 0.0);
 }
@@ -99,14 +100,15 @@ void Capture::open(int32_t device_id)
 }
 
 bool Capture::open(const std::string& port)
-{   
+{
     std::string device;
 
     if (det_device_path(port.c_str()).compare("-1") != 0)
     {
         device = "/dev/video" + det_device_path(port.c_str());
     }
-    else{
+    else
+    {
         std::cout << "Device couldnt be determined in port " << port << std::endl;
     }
 
@@ -117,26 +119,27 @@ bool Capture::open(const std::string& port)
     }
     else
     {
-        std::cout << "The port "<< port << " is located in " << device << std::endl;
+        std::cout << "The port " << port << " is located in " << device << std::endl;
     }
 
     cap_.open(device, cv::CAP_V4L2);
 
-    std::chrono::milliseconds video_recovery_time(VIDEO_STREAM_CAM_RECOVERY_TIME*1000); // or whatever
+    std::chrono::milliseconds video_recovery_time(VIDEO_STREAM_CAM_RECOVERY_TIME * 1000);  // or whatever
 
     while (!cap_.isOpened() && m_reconnection_attempts < 10)
     {
-        m_reconnection_attempts +=1;
-        RCLCPP_ERROR(node_->get_logger(),"Error while opening %s. Retrying %d/10 ", port.c_str(), m_reconnection_attempts);
+        m_reconnection_attempts += 1;
+        RCLCPP_ERROR(node_->get_logger(), "Error while opening %s. Retrying %d/10 ", port.c_str(),
+                     m_reconnection_attempts);
         cap_.open(device, cv::CAP_V4L2);
         std::this_thread::sleep_for(video_recovery_time);
     }
 
-    if (!cap_.isOpened() )
+    if (!cap_.isOpened())
     {
-        RCLCPP_ERROR(node_->get_logger(),"Unable to open device %s.", port.c_str());
+        RCLCPP_ERROR(node_->get_logger(), "Unable to open device %s.", port.c_str());
         return false;
-        //throw DeviceError("device_path " + device_path + " cannot be opened");
+        // throw DeviceError("device_path " + device_path + " cannot be opened");
     }
     // pub_ = it_.advertiseCamera(topic_name_, buffer_size_);
     rmw_qos_profile_t custom_qos = rmw_qos_profile_sensor_data;
@@ -170,56 +173,27 @@ bool Capture::capture()
 {
     if (cap_.retrieve(bridge_.image))
     {
+        sensor_msgs::msg::Image::UniquePtr msg(new sensor_msgs::msg::Image());
 
-        // DEBUG Get the PID
-        std::stringstream ss;
-        ss << "pid_origi: " << std::to_string(getpid()) << ", ptr: " << &bridge_;
-        cv::putText(bridge_.image, ss.str(), cv::Point(80, 50), cv::FONT_HERSHEY_DUPLEX, 0.8, cv::Scalar(0, 0, 255), 1.5, false);
+        // Pack the OpenCV image into the ROS image.
+        set_now(msg->header.stamp);
+        msg->header.frame_id = "camera_frame";
+        msg->height = bridge_.image.rows;
+        msg->width = bridge_.image.cols;
+        msg->encoding = mat_type2encoding(bridge_.image.type());
+        msg->is_bigendian = false;
+        msg->step = static_cast<sensor_msgs::msg::Image::_step_type>(bridge_.image.step);
+        msg->data.assign(bridge_.image.datastart, bridge_.image.dataend);
 
-        // // DEBUG show images
-        // cv::namedWindow("Imageshow" + topic_name_, cv::WINDOW_AUTOSIZE);
-        // cv::imshow("Imageshow"+topic_name_, bridge_.image);
-        // cv::waitKey(1);
+        m_pub_image_ptr->publish(std::move(msg)); 
 
-        rclcpp::Clock system_clock(RCL_SYSTEM_TIME);
-        rclcpp::Time stamp = system_clock.now() - capture_delay_;
-        bridge_.encoding = enc::BGR8;
-        bridge_.header.stamp = stamp;
-        bridge_.header.frame_id = frame_id_;
-
-        info_ = info_manager_.getCameraInfo();
-        if (info_.height == 0 && info_.width == 0)
-        {
-            info_.height = bridge_.image.rows;
-            info_.width = bridge_.image.cols;
-        }
-        else if (info_.height != (unsigned int)bridge_.image.rows || info_.width != (unsigned int)bridge_.image.cols)
-        {
-            if (rescale_camera_info_)
-            {
-                int old_width = info_.width;
-                int old_height = info_.height;
-                rescaleCameraInfo(bridge_.image.cols, bridge_.image.rows);
-                RCLCPP_INFO_ONCE(node_->get_logger(), "Camera calibration automatically rescaled from %dx%d to %dx%d",
-                                 old_width, old_height, bridge_.image.cols, bridge_.image.rows);
-            }
-            else
-            {
-                RCLCPP_WARN_ONCE(node_->get_logger(),
-                                 "Calibration resolution %dx%d does not match camera resolution %dx%d. "
-                                 "Use rescale_camera_info param for rescaling",
-                                 info_.width, info_.height, bridge_.image.cols, bridge_.image.rows);
-            }
-        }
-        info_.header.stamp = stamp;
-        info_.header.frame_id = frame_id_;
 
         return true;
     }
     return false;
 }
 
-void Capture::publish() { pub_.publish(*getImageMsgPtr(), info_); }
+// void Capture::publish() { pub_.publish(*getImageMsgPtr(), info_); }
 
 bool Capture::setPropertyFromParam(int property_id, const std::string& param_name)
 {
@@ -263,7 +237,7 @@ std::string Capture::execute_command(const char* command)
 std::string Capture::det_device_path(const char* port)
 {
     std::string video_device = "-1";
-    //TODO: instead of reading the output from shell, iter the directory
+    // TODO: instead of reading the output from shell, iter the directory
     std::string video_devices = execute_command("ls /dev/video*");
     std::string delimiter = "\n";
 
@@ -271,24 +245,24 @@ std::string Capture::det_device_path(const char* port)
     std::string pre_token;
     std::string token;
     std::string output_command;
-    std::vector<int>devices;
+    std::vector<int> devices;
 
     while ((pos = video_devices.find(delimiter)) != std::string::npos)
-    {   
+    {
         // get /dev/videoX substring
         pre_token = video_devices.substr(0, pos);
         // get number of the cam device
-        token = pre_token.substr(10,2);
+        token = pre_token.substr(10, 2);
         devices.push_back(std::stoi(token));
 
         video_devices.erase(0, pos + delimiter.length());
     }
 
     // Sort the vector to get devices in order
-	std::sort(devices.begin(),devices.end());
+    std::sort(devices.begin(), devices.end());
 
     // Iter the devices to identify which port correspond to which videoX
-    for(const auto& cam : devices)
+    for (const auto& cam : devices)
     {
         output_command = "udevadm info --query=path --name=/dev/video" + std::to_string(cam);
         std::string camera_device_info = execute_command(output_command.c_str());

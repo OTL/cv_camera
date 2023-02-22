@@ -70,7 +70,7 @@ bool Driver::setup()
     }
     else if (this->get_parameter("port", port) && port != "")
     {
-        if(!camera_->open(port)) 
+        if (!camera_->open(port))
         {
             RCLCPP_WARN(get_logger(), "Couldnt open camera");
             // return false;
