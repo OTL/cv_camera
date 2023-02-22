@@ -185,8 +185,7 @@ bool Capture::capture()
         msg->step = static_cast<sensor_msgs::msg::Image::_step_type>(bridge_.image.step);
         msg->data.assign(bridge_.image.datastart, bridge_.image.dataend);
 
-        m_pub_image_ptr->publish(std::move(msg)); 
-
+        m_pub_image_ptr->publish(std::move(msg));
 
         return true;
     }

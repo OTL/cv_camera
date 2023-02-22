@@ -102,7 +102,7 @@ bool Driver::setup()
     publish_tmr_ = this->create_wall_timer(std::chrono::milliseconds(int(1000.0 / hz_pub)), [&]() {
         if (camera_->capture())
         {
-            camera_->publish();
+            // camera_->publish();
         }
     });
 #ifdef CV_CAP_PROP_WHITE_BALANCE_U
