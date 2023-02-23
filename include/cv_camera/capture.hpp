@@ -268,10 +268,6 @@ class Capture
      * @brief capture_delay param value
      */
     rclcpp::Duration capture_delay_;
-
-    const int VIDEO_STREAM_CAM_RECOVERY_TIME = getEnv("VIDEO_STREAM_CAM_RECOVERY_TIME", 2);
-
-    int m_reconnection_attempts = 0;
 };
 
 }  // namespace cv_camera

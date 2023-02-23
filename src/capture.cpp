@@ -109,31 +109,20 @@ bool Capture::open(const std::string& port)
     }
     else
     {
-        std::cout << "Device couldnt be determined in port " << port << std::endl;
+        RCLCPP_WARN_ONCE(node_->get_logger(), "Device couldnt be determined in port %s", port.c_str());
     }
 
     if (device.empty())
     {
-        std::cout << "Camera Not found in port " << port << std::endl;
+        RCLCPP_WARN_ONCE(node_->get_logger(), "Camera Not found in port %s", port.c_str());
         return false;
     }
     else
     {
-        std::cout << "The port " << port << " is located in " << device << std::endl;
+        RCLCPP_WARN_ONCE(node_->get_logger(), "The port %s is located in %s", port.c_str(), device.c_str());
     }
 
     cap_.open(device, cv::CAP_V4L2);
-
-    std::chrono::milliseconds video_recovery_time(VIDEO_STREAM_CAM_RECOVERY_TIME * 1000);  // or whatever
-
-    while (!cap_.isOpened() && m_reconnection_attempts < 10)
-    {
-        m_reconnection_attempts += 1;
-        RCLCPP_ERROR(node_->get_logger(), "Error while opening %s. Retrying %d/10 ", port.c_str(),
-                     m_reconnection_attempts);
-        cap_.open(device, cv::CAP_V4L2);
-        std::this_thread::sleep_for(video_recovery_time);
-    }
 
     if (!cap_.isOpened())
     {

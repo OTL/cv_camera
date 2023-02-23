@@ -51,6 +51,18 @@ class Driver : public rclcpp::Node
      * @brief publishing rate.
      */
     std::shared_ptr<rclcpp::Rate> rate_;
+    /**
+     * @brief camera port.
+     */
+    std::string port;
+    /**
+     * @brief Environment variables
+     */
+    const int VIDEO_STREAM_CAM_RECOVERY_TIME = getEnv("VIDEO_STREAM_CAM_RECOVERY_TIME", 2);
+    /**
+     * @brief Reconnection attempts to open a camera port
+     */
+    int m_reconnection_attempts = 0;
 };
 
 }  // namespace cv_camera

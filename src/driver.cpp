@@ -20,7 +20,6 @@ bool Driver::setup()
 {
     double hz_pub(DEFAULT_RATE), hz_read(DEFAULT_RATE);
     int32_t device_id(0);
-    std::string port("");
     std::string frame_id("camera");
     std::string file_path("");
     std::string topic_name("");
@@ -121,7 +120,20 @@ bool Driver::setup()
 
 void Driver::proceed()
 {
-    camera_->grab();
+    if (!camera_->grab())
+    {
+        std::chrono::milliseconds video_recovery_time(VIDEO_STREAM_CAM_RECOVERY_TIME * 1000);  // or whatever
+
+        while (!camera_->open(port) && m_reconnection_attempts < 10)
+        {
+            m_reconnection_attempts += 1;
+            RCLCPP_ERROR(get_logger(), "Error while opening %s. Retrying %d/10 ", port.c_str(),
+                         m_reconnection_attempts);
+            camera_->open(port);
+            std::this_thread::sleep_for(video_recovery_time);
+        }
+        return;
+    };
     rate_->sleep();
 }
 
