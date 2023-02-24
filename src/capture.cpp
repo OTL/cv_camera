@@ -109,17 +109,19 @@ bool Capture::open(const std::string& port)
     }
     else
     {
-        RCLCPP_WARN_ONCE(node_->get_logger(), "Device couldnt be determined in port %s", port.c_str());
+        RCLCPP_WARN_ONCE(node_->get_logger(), "%s: Device couldnt be determined in port %s", topic_name_.c_str(),
+                         port.c_str());
     }
 
     if (device.empty())
     {
-        RCLCPP_WARN_ONCE(node_->get_logger(), "Camera Not found in port %s", port.c_str());
+        RCLCPP_WARN_ONCE(node_->get_logger(), "%s: Camera Not found in port %s", topic_name_.c_str(), port.c_str());
         return false;
     }
     else
     {
-        RCLCPP_WARN_ONCE(node_->get_logger(), "The port %s is located in %s", port.c_str(), device.c_str());
+        RCLCPP_WARN_ONCE(node_->get_logger(), "%s: The port %s is located in %s", topic_name_.c_str(), port.c_str(),
+                         device.c_str());
     }
 
     cap_.open(device, cv::CAP_V4L2);

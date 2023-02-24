@@ -22,7 +22,6 @@ bool Driver::setup()
     int32_t device_id(0);
     std::string frame_id("camera");
     std::string file_path("");
-    std::string topic_name("");
 
     // Declare Custom Parameters
     this->declare_parameter("port", "");
@@ -56,6 +55,7 @@ bool Driver::setup()
     // this->get_parameter("device_id", device_id);
     // this->get_parameter("frame_id", frame_id);
     this->get_parameter("topic_name", topic_name);
+    this->get_parameter("name", name);
 
     // Timers
     m_proceed_tmr =
@@ -127,11 +127,13 @@ void Driver::proceed()
         while (!camera_->open(port) && m_reconnection_attempts < 10)
         {
             m_reconnection_attempts += 1;
-            RCLCPP_ERROR(get_logger(), "Error while opening %s. Retrying %d/10 ", port.c_str(),
-                         m_reconnection_attempts);
+            RCLCPP_ERROR(get_logger(), "not possible to open %s. (device %s), retrying... %d/%d ", name.c_str(),
+                         port.c_str(), m_reconnection_attempts, VIDEO_STREAM_CAM_RECOVERY_TRIES);
             camera_->open(port);
             std::this_thread::sleep_for(video_recovery_time);
         }
+        RCLCPP_ERROR(get_logger(), "Error while opening %s. %s camera Lost", port.c_str(), name.c_str());
+        m_proceed_tmr->cancel();
         return;
     };
     rate_->sleep();

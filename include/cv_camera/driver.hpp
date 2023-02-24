@@ -56,9 +56,18 @@ class Driver : public rclcpp::Node
      */
     std::string port;
     /**
+     * @brief Topic name.
+     */
+    std::string topic_name;
+    /**
+     * @brief Camera name.
+     */
+    std::string name;
+    /**
      * @brief Environment variables
      */
     const int VIDEO_STREAM_CAM_RECOVERY_TIME = getEnv("VIDEO_STREAM_CAM_RECOVERY_TIME", 2);
+    const int VIDEO_STREAM_CAM_RECOVERY_TRIES = getEnv("VIDEO_STREAM_CAM_RECOVERY_TRIES", 10);
     /**
      * @brief Reconnection attempts to open a camera port
      */
